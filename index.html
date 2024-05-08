@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot Configuration with Multilingual and Download Support</title>
+<style>
+    body { display: flex; }
+    #formContainer, #jsonContainer { width: 50%; padding: 10px; }
+    textarea { width: 100%; height: 90vh; }
+    .languageInput { margin-top: 10px; }
+</style>
+</head>
+<body>
+<div id="formContainer">
+    <form id="botConfigForm">
+        <h1>Customize Your Bot</h1>
+        <div id="menusContainer">
+            <!-- Nested menus will be added here -->
+        </div>
+        <button type="button" onclick="addMenu(menusContainer, 0); updateJSON();">Add Main Menu</button>
+        <button type="button" onclick="downloadJSON();">Download JSON</button>
+        <button type="submit">Submit Configuration</button>
+    </form>
+</div>
+
+<div id="jsonContainer">
+    <h1>JSON Preview</h1>
+    <textarea id="jsonOutput" readonly></textarea>
+</div>
+
+<script>
+function addMenu(parent, level) {
+    console.log(parent,level);
+    let menuId = 'menu' + Date.now();  // Unique ID for the menu based on timestamp
+    let div = document.createElement('div');
+    div.className = 'menu';
+    div.id = menuId;
+    div.innerHTML = `
+        <h2>Menu Level ${level}</h2>
+        <div>
+            <label>Description English:</label>
+            <input type="text" class="description" data-lang="1" oninput="updateJSON()">
+            <label>Description Kiswahili:</label>
+            <input type="text" class="description" data-lang="2" oninput="updateJSON()">
+        </div>
+        <div>
+            <label>Text English:</label>
+            <input type="text" class="text" data-lang="1" oninput="updateJSON()">
+            <label>Text Kiswahili:</label>
+            <input type="text" class="text" data-lang="2" oninput="updateJSON()">
+        </div>
+        <label>Payload:</label>
+        <input type="text" oninput="updateJSON()">
+        <label>Active:</label>
+        <input type="checkbox" checked oninput="updateJSON()">
+        <div class="subMenus"></div>
+        <button type="button" onclick="addSubMenu(${menuId}, ${level + 1}); updateJSON();">Add Submenu</button>
+        <button type="button" onclick="removeMenu('${menuId}'); updateJSON();">Remove Menu</button>
+    `;
+    // Create a container for subMenus if it doesn't already exist
+    let subMenusContainer = document.createElement('div');
+    subMenusContainer.className = 'subMenus';
+    div.appendChild(subMenusContainer);
+
+    // parentElement.appendChild(div);
+    parent.appendChild(div);
+}
+
+function addSubMenu(parent, level) {
+    console.log(parent,level);
+    let menuId = 'menu' + Date.now();  // Unique ID for the menu based on timestamp
+    let div = document.createElement('div');
+    div.className = 'menu';
+    // div.id = menuId;
+    div.innerHTML = `
+        <h2>Menu Level ${level}</h2>
+        <div>
+            <label>Description English:</label>
+            <input type="text" class="description" data-lang="1" oninput="updateJSON()">
+            <label>Description Kiswahili:</label>
+            <input type="text" class="description" data-lang="2" oninput="updateJSON()">
+        </div>
+        <div>
+            <label>Text English:</label>
+            <input type="text" class="text" data-lang="1" oninput="updateJSON()">
+            <label>Text Kiswahili:</label>
+            <input type="text" class="text" data-lang="2" oninput="updateJSON()">
+        </div>
+        <label>Payload:</label>
+        <input type="text" oninput="updateJSON()">
+        <label>Active:</label>
+        <input type="checkbox" checked oninput="updateJSON()">
+        <button type="button" onclick="addMenu(${menuId}, ${level + 1}); updateJSON();">Add Submenu</button>
+        <button type="button" onclick="removeMenu('${menuId}'); updateJSON();">Remove Menu</button>
+    `;
+    // Create a container for subMenus if it doesn't already exist
+    let subMenusContainer = document.createElement('div');
+    subMenusContainer.id = menuId;
+    subMenusContainer.className = 'subMenus';
+    div.appendChild(subMenusContainer);
+
+    // parentElement.appendChild(div);
+    parent.appendChild(div);
+    // parent.querySelector(':nth-child(7)').appendChild(div);
+}
+
+function removeMenu(menuId) {
+    let menu = document.getElementById(menuId);
+    if (menu) {
+        menu.parentNode.removeChild(menu);
+    }
+}
+
+function updateJSON() {
+    let jsonOutput = constructJSON(document.getElementById('menusContainer'));
+    document.getElementById('jsonOutput').value = JSON.stringify(jsonOutput, null, 2);
+}
+
+function constructJSON(element) {
+    if (!element) return []; // Return empty array if there's no element to process
+
+    let result = [];
+    let menus = element.children;
+
+    for (let menu of menus) {
+        // Process only menu items that are not classified as submenus themselves
+        if (!menu.classList.contains('subMenus')) {
+            let descriptions = Object.fromEntries(
+                Array.from(menu.querySelectorAll('.description')).map(input => [input.dataset.lang, input.value])
+            );
+            let texts = Object.fromEntries(
+                Array.from(menu.querySelectorAll('.text')).map(input => [input.dataset.lang, input.value])
+            );
+            let payload = menu.querySelector('input[type="text"]:not(.description):not(.text)').value;
+            let active = menu.querySelector('input[type="checkbox"]').checked;
+            
+            // Find submenus if they exist
+            let subMenus = menu.querySelector('.subMenus');
+            console.log('SubMenus for ' + menu.id + ':', subMenus); // Log the state of subMenus
+
+            let content = subMenus ? constructJSON(subMenus) : []; // Recursively process submenus
+            
+            let menuData = {
+                code: menu.id,
+                description: descriptions,
+                text: texts,
+                payload: payload,
+                active: active,
+                content: content
+            };
+            result.push(menuData);
+        }
+    }
+    return result;
+}
+
+function downloadJSON() {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(document.getElementById('jsonOutput').value);
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "bot_config.json");
+    document.body.appendChild(downloadAnchorNode); // Required for Firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+</script>
+</body>
+</html>

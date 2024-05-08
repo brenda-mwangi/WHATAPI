@@ -1,0 +1,572 @@
+{
+  "code": "1",
+  "description": {
+    "1": "English",
+    "2": "Kiswahili"
+  },
+  "text": {
+    "1": "English",
+    "2": "Kiswahili"
+  },
+  "dataType": "",
+  "optionsLink": "",
+  "payload": "",
+  "input": "",
+  "required": false,
+  "updateLink": "",
+  "active": true,
+  "finalSuccessMessage": {
+    "1": "",
+    "2": ""
+  },
+  "finalFailedMessage": {
+    "1": "",
+    "2": "",
+    "3": ""
+  },
+  "content": [
+        {
+        "code": "1",
+        "description": {
+            "1": "Changalink Main menu:\n1. Start a Fundraiser\n2. Donate to a Fundraiser\n3. Pledge\n4. Check Fundraiser Status\n5. Update Fundraiser Details\n6. Withdraw from fundraiser\n7. Help/Support\n\n99: Back",
+            "2": ""
+        },
+        "text": {
+            "1": "Changalink Main menu:\n1. Start a Fundraiser\n2. Donate to a Fundraiser\n3. Pledge\n4. Check Fundraiser Status\n5. Update Fundraiser Details\n6. Withdraw from fundraiser\n7. Help/Support\n\n99: Back",
+            "2": ""
+        },
+        "dataType": "",
+        "optionsLink": "",
+        "payload": "",
+        "input": "",
+        "required": false,
+        "updateLink": "",
+        "active": true,
+        "finalSuccessMessage": {
+            "1": "",
+            "2": ""
+        },
+        "finalFailedMessage": {
+            "1": "",
+            "2": ""
+        },
+        "content": [
+            {
+            "code": "1",
+            "description": {
+                "1": "Start a Fundraiser",
+                "2": ""
+            },
+            "text": {
+                "1": "Start a Fundraiser",
+                "2": ""
+            },
+            "dataType": "",
+            "optionsLink": "",
+            "payload": "",
+            "input": "",
+            "required": "",
+            "updateLink": "http://localhost/api/?resource=fundraiser&action=create",
+            "active": true,
+            "finalSuccessMessage": {
+                "1": "Fundraiser creation SUCCESS\n\n99: Back to Main Menu",
+                "2": ""
+            },
+            "finalFailedMessage": {
+                "1": "Fundraiser creation FAILED\n",
+                "2": ""
+            },
+            "content": [
+                {
+                "code": "1",
+                "description": {
+                    "1": "You've selected to start a new fundraiser. Please enter the title of your fundraiser.",
+                    "2": ""
+                },
+                "text": {
+                    "1": "You've selected to start a new fundraiser. Please enter the title of your fundraiser.",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "title",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": ""
+                },
+                "content": []
+                },
+                {
+                "code": "2",
+                "description": {
+                    "1": "Great👍🏻! Provide a short description for your fundraiser.\n\n99: Back to Main Menu",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Great👍🏻! Provide a short description for your fundraiser.\n\n99: Back to Main Menu",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "description",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": ""
+                },
+                "content": []
+                },
+                {
+                "code": "3",
+                "description": {
+                    "1": "Enter start date in the form (DD/MM/YYYY)\n\n99: Back to Main Menu",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Enter start date in the form (DD/MM/YYYY)\n\n99: Back to Main Menu",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "start_date",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": ""
+                },
+                "content": []
+                },
+                {
+                "code": "4",
+                "description": {
+                    "1": "Enter end date in the form (DD/MM/YYYY)\n\n99: Back to Main Menu",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Enter end date in the form (DD/MM/YYYY)\n\n99: Back to Main Menu",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "end_date",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": ""
+                },
+                "content": []
+                },
+                {
+                "code": "5",
+                "description": {
+                    "1": "Provide a beneficiary phone(0740730056)\n\n99: Back",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Provide a beneficiary phone(0740730056)\n\n99: Back",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "beneficiary_phone",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "content": []
+                },
+                {
+                "code": "6",
+                "description": {
+                    "1": "Type the mode of beneficiary payments. Valid input is (Mpesa)\n\n99: Back",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Type the mode of beneficiary payments. Valid input is (Mpesa)\n\n99: Back",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "mode_of_disbursement",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "content": []
+                },
+                {
+                "code": "7",
+                "description": {
+                    "1": "Please enter the goal amount for your fundraiser\n\n99: Back",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Please enter the goal amount for your fundraiser\n\n99: Back",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "target_amount",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "content": []
+                },
+                {
+                "code": "8",
+                "description": {
+                    "1": "Enter the WhatsApp Group *link only* for your fundraiser\n\n99: Back",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Enter the WhatsApp Group *link only* for your fundraiser\n\n99: Back",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "Whatsapp_groupLink",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "content": []
+                }
+            ]
+            },
+            {
+            "code": "2",
+            "description": {
+                "1": "Donate to a Fundraiser",
+                "2": ""
+            },
+            "text": {
+                "1": "Donate to a Fundraiser",
+                "2": ""
+            },
+            "dataType": "",
+            "optionsLink": "",
+            "payload": "",
+            "input": "",
+            "required": "",
+            "updateLink": "http://localhost/api/?resource=payment&action=generate_link",
+            "active": true,
+            "finalSuccessMessage": {
+                "1": "\nClick on the link below to choose your preferred mode of payment and complete your contribution.\n\n",
+                "2": ""
+            },
+            "finalFailedMessage": {
+                "1": "An error occured; ",
+                "2": ""
+            },
+            "content": [
+                {
+                "code": "1",
+                "description": {
+                    "1": "Enter the ID of the fundraiser you would like to contribute to.\n",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Enter the ID of the fundraiser you would like to contribute to.\n",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "fundraiserId",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "content": []
+                },
+                {
+                "code": "2",
+                "description": {
+                    "1": "Enter amount to be contributed to the fundraiser \n",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Enter amount to be contributed to the fundraiser \n",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "amount",
+                "input": "",
+                "required": "",
+                "updateLink": "",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "content": []
+                }
+            ]
+            },
+            {
+            "code": "3",
+            "description": {
+                "1": "*Pledges*\n1. Create a new pledge\n2. Show my pledges\n",
+                "2": ""
+            },
+            "text": {
+                "1": "*Pledges*\n1. Create a new pledge\n2. Show my pledges\n",
+                "2": ""
+            },
+            "dataType": "",
+            "optionsLink": "",
+            "payload": "",
+            "input": "",
+            "required": "",
+            "updateLink": "",
+            "active": true,
+            "finalSuccessMessage": {
+                "1": "",
+                "2": "",
+                "3": ""
+            },
+            "finalFailedMessage": {
+                "1": "",
+                "2": "",
+                "3": ""
+            },
+            "content": [
+                {
+                "code": "1",
+                "description": {
+                    "1": "Create a new pledge\n",
+                    "2": ""
+                },
+                "text": {
+                    "1": "Create a new pledge\n",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "",
+                "input": "",
+                "required": "",
+                "updateLink": "http://localhost/api/?resource=payment&action=pledge",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "content": [
+                    {
+                    "code": "1",
+                    "description": {
+                        "1": "Showing All Pledges 🔄\n",
+                        "2": ""
+                    },
+                    "text": {
+                        "1": "Enter the ID of the fundraiser you would like to pledge to.\n",
+                        "2": ""
+                    },
+                    "dataType": "",
+                    "optionsLink": "",
+                    "payload": "fundraiserId",
+                    "input": "",
+                    "required": "",
+                    "updateLink": "",
+                    "active": true,
+                    "finalSuccessMessage": {
+                        "1": "",
+                        "2": "",
+                        "3": ""
+                    },
+                    "finalFailedMessage": {
+                        "1": "",
+                        "2": "",
+                        "3": ""
+                    },
+                    "content": []
+                    },
+                    {
+                    "code": "2",
+                    "description": {
+                        "1": "Enter amount to be pledged \n",
+                        "2": ""
+                    },
+                    "text": {
+                        "1": "Enter amount to be pledged \n",
+                        "2": ""
+                    },
+                    "dataType": "",
+                    "optionsLink": "",
+                    "payload": "amount",
+                    "input": "",
+                    "required": "",
+                    "updateLink": "",
+                    "active": true,
+                    "finalSuccessMessage": {
+                        "1": "",
+                        "2": "",
+                        "3": ""
+                    },
+                    "finalFailedMessage": {
+                        "1": "",
+                        "2": "",
+                        "3": ""
+                    },
+                    "content": []
+                    }
+                ]
+                },
+                {
+                "code": "2",
+                "description": {
+                    "1": "*Pledges Menu*",
+                    "2": ""
+                },
+                "text": {
+                    "1": "*Pledges Menu*",
+                    "2": ""
+                },
+                "dataType": "",
+                "optionsLink": "",
+                "payload": "",
+                "input": "",
+                "required": "",
+                "updateLink": "http://localhost/api/?resource=payment&action=my_pledges",
+                "active": true,
+                "finalSuccessMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "finalFailedMessage": {
+                    "1": "",
+                    "2": "",
+                    "3": ""
+                },
+                "content": [
+                    {
+                    "code": "1",
+                    "description": {
+                        "1": "1. Show all my pledges\n2. Clear pledge bill\n",
+                        "2": ""
+                    },
+                    "text": {
+                        "1": "1. Show all my pledges\n2. Clear pledge bill\n",
+                        "2": ""
+                    },
+                    "dataType": "",
+                    "optionsLink": "",
+                    "payload": "showAll",
+                    "input": "",
+                    "required": "",
+                    "updateLink": "",
+                    "active": true,
+                    "finalSuccessMessage": {
+                        "1": "",
+                        "2": "",
+                        "3": ""
+                    },
+                    "finalFailedMessage": {
+                        "1": "",
+                        "2": "",
+                        "3": ""
+                    },
+                    "content": []
+                    }
+                ]
+                }
+            ]
+            }
+        ]
+        }
+    ]
+}

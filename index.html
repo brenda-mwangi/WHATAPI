@@ -15,6 +15,9 @@
 <div id="formContainer">
     <form id="botConfigForm">
         <h1>Customize Your Bot</h1>
+        <label for="languageCount">Number of Languages:</label>
+        <input type="number" id="languageCount" value="2" min="1" max="10" onchange="prepareMenuTemplate();">
+        
         <div id="menusContainer">
             <!-- Nested menus will be added here -->
         </div>
@@ -30,6 +33,28 @@
 </div>
 
 <script>
+    function prepareMenuTemplate() {
+        const languageCount = parseInt(document.getElementById('languageCount').value, 10);
+        window.menuTemplate = generateMenuTemplate(languageCount);
+    }
+
+    function generateMenuTemplate(languageCount) {
+        let descriptionHTML = '';
+        let textHTML = '';
+
+        for (let i = 1; i <= languageCount; i++) {
+            descriptionHTML += `<label>Description Language ${i}:</label>
+                                <input type="text" class="description" data-lang="${i}" oninput="updateJSON()">`;
+            textHTML += `<label>Text Language ${i}:</label>
+                        <input type="text" class="text" data-lang="${i}" oninput="updateJSON()">`;
+        }
+
+        return {
+            descriptionHTML,
+            textHTML
+        };
+    }
+
     function addMenu(parentId, level) {
         let menuId = 'menu' + Date.now();  // Unique ID for the menu based on timestamp
         let div = document.createElement('div');
@@ -37,18 +62,9 @@
         div.id = menuId;
         div.innerHTML = `
             <h2>Menu Level ${level}</h2>
-            <div>
-                <label>Description English:</label>
-                <input type="text" class="description" data-lang="1" oninput="updateJSON()">
-                <label>Description Kiswahili:</label>
-                <input type="text" class="description" data-lang="2" oninput="updateJSON()">
-            </div>
-            <div>
-                <label>Text English:</label>
-                <input type="text" class="text" data-lang="1" oninput="updateJSON()">
-                <label>Text Kiswahili:</label>
-                <input type="text" class="text" data-lang="2" oninput="updateJSON()">
-            </div>
+            <div>${window.menuTemplate.descriptionHTML}</div>
+            <div>${window.menuTemplate.textHTML}</div>
+            
             <label>Payload:</label>
             <input type="text" oninput="updateJSON()">
             <label>Active:</label>

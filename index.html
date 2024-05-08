@@ -33,6 +33,7 @@
 </div>
 
 <script>
+    let menuCounter = {};
     function prepareMenuTemplate() {
         const languageCount = parseInt(document.getElementById('languageCount').value, 10);
         window.menuTemplate = generateMenuTemplate(languageCount);
@@ -56,10 +57,17 @@
     }
 
     function addMenu(parentId, level) {
+        if (!menuCounter[parentId]) {
+            menuCounter[parentId] = 1;
+        } else {
+            menuCounter[parentId]++;
+        }
+
         let menuId = 'menu' + Date.now();  // Unique ID for the menu based on timestamp
         let div = document.createElement('div');
         div.className = 'menu';
         div.id = menuId;
+        div.value = `${menuCounter[parentId]}`;
         div.innerHTML = `
             <h2>Menu Level ${level}</h2>
             <div>${window.menuTemplate.descriptionHTML}</div>
@@ -123,7 +131,8 @@
                 let content = subMenus ? constructJSON(subMenus) : []; // Recursively process submenus
                 
                 let menuData = {
-                    code: menu.id,
+                    id: menu.id,
+                    code: menu.value,
                     description: descriptions,
                     text: texts,
                     payload: payload,

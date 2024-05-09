@@ -57,19 +57,29 @@
     }
 
     function addMenu(parentId, level) {
-        if (!menuCounter[parentId]) {
-            menuCounter[parentId] = 1;
-        } else {
-            menuCounter[parentId]++;
-        }
+        let parent = document.getElementById(parentId === 'menusContainer' ? 'menusContainer' : `sub${parentId}`);
+        let existingMenus = parent.getElementsByClassName('menu');
+        let maxDataValue = 0;
 
-        let menuId = 'menu' + Date.now();  // Unique ID for the menu based on timestamp
+        // Calculate the maximum data-value in existing menus
+        Array.from(existingMenus).forEach(menu => {
+            let value = parseInt(menu.getAttribute('data-value'), 10);
+            if (value > maxDataValue) {
+                maxDataValue = value;
+            }
+        });
+
+        // Set the next data-value by incrementing the maximum found value
+        let nextDataValue = maxDataValue + 1;
+
+        // Create a new menu element
+        let menuId = 'menu' + Date.now();
         let div = document.createElement('div');
         div.className = 'menu';
         div.id = menuId;
-        div.value = `${menuCounter[parentId]}`;
+        div.setAttribute('data-value', nextDataValue);
         div.innerHTML = `
-            <h2>Menu Level ${level}</h2>
+            <h2>Menu Level ${level}_${nextDataValue}</h2>
             <div>${window.menuTemplate.descriptionHTML}</div>
             <div>${window.menuTemplate.textHTML}</div>
             
@@ -81,24 +91,51 @@
             <button type="button" onclick="addMenu('${menuId}', ${level + 1}); updateJSON();">Add Submenu</button>
             <button type="button" onclick="removeMenu('${menuId}'); updateJSON();">Remove Menu</button>
         `;
-        // Create a container for subMenus if it doesn't already exist
+
+        // Append the new menu to its parent
         let subMenusContainer = document.createElement('div');
         subMenusContainer.className = 'subMenus';
-        subMenusContainer.id = `subMenu${menuId}`;
+        subMenusContainer.id = `sub${menuId}`;
         div.appendChild(subMenusContainer);
 
-        if(parentId=='menusContainer'){
-            document.getElementById(parentId).appendChild(div);
-        } else {
-            document.getElementById(`subMenu${parentId}`).appendChild(div);
-        }
-        
+        parent.appendChild(div);
     }
 
     function removeMenu(menuId) {
         let menu = document.getElementById(menuId);
         if (menu) {
-            menu.parentNode.removeChild(menu);
+            console.log('Removing menu with id:', menuId);
+
+            let parentId = menu.parentNode.id.startsWith('submenu') ? menu.parentNode.id : 'menusContainer';
+            console.log('Parent ID:', parentId);
+
+            let parent = menu.parentNode;
+            console.log('Parent Node:', parent);
+
+            // Log all siblings to debug the issue
+            console.log('All children of the parent node:');
+            Array.from(parent.children).forEach(child => {
+                console.log(child.id, child);
+            });
+
+            // Remove the menu
+            parent.removeChild(menu);
+
+            let siblings = Array.from(parent.children);
+            console.log('Remaining siblings:', siblings);
+            
+            // Update the data-value of each subsequent sibling
+            siblings.forEach((sibling, idx) => {
+                if (sibling.classList.contains('menu')) {
+                    // Calculate the new index for each sibling, ensuring it doesn't drop below 1
+                    let newIdx = Math.max(1, idx + 1);  // Adjust index to be 1-based
+                    sibling.setAttribute('data-value', newIdx.toString());
+                    console.log(`Updated data-value of ${sibling.id} to ${newIdx}`);
+                }
+            });
+
+        } else {
+            console.error('No menu found with id:', menuId);
         }
     }
 
@@ -131,8 +168,7 @@
                 let content = subMenus ? constructJSON(subMenus) : []; // Recursively process submenus
                 
                 let menuData = {
-                    id: menu.id,
-                    code: menu.value,
+                    code: menu.getAttribute('data-value'),
                     description: descriptions,
                     text: texts,
                     payload: payload,
@@ -149,7 +185,7 @@
         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(document.getElementById('jsonOutput').value);
         var downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", "bot_config.json");
+        downloadAnchorNode.setAttribute("download", "My_bot_config.json");
         document.body.appendChild(downloadAnchorNode); // Required for Firefox
         downloadAnchorNode.click();
         downloadAnchorNode.remove();

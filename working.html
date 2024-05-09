@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bot Configuration with Multilingual and Download Support</title>
+<style>
+    body { display: flex; }
+    #formContainer, #jsonContainer { width: 50%; padding: 10px; }
+    textarea { width: 100%; height: 90vh; }
+    .languageInput { margin-top: 10px; }
+</style>
+</head>
+<body>
+<div id="formContainer">
+    <form id="botConfigForm">
+        <h1>Customize Your Bot</h1>
+        <label for="languageCount">Number of Languages:</label>
+        <input type="number" id="languageCount" value="2" min="1" max="10" onchange="prepareMenuTemplate();">
+        
+        <div id="menusContainer">
+            <!-- Nested menus will be added here -->
+        </div>
+        <button type="button" onclick="addMenu('menusContainer', 0); updateJSON();">Add Main Menu</button>
+        <button type="button" onclick="downloadJSON();">Download JSON</button>
+        <button type="submit">Submit Configuration</button>
+    </form>
+</div>
+
+<div id="jsonContainer">
+    <h1>JSON Preview</h1>
+    <textarea id="jsonOutput" readonly></textarea>
+</div>
+
+<script>
+    let menuCounter = {};
+    function prepareMenuTemplate() {
+        const languageCount = parseInt(document.getElementById('languageCount').value, 10);
+        window.menuTemplate = generateMenuTemplate(languageCount);
+    }
+
+    function generateMenuTemplate(languageCount) {
+        let descriptionHTML = '';
+        let textHTML = '';
+
+        for (let i = 1; i <= languageCount; i++) {
+            descriptionHTML += `<label>Description Language ${i}:</label>
+                                <input type="text" class="description" data-lang="${i}" oninput="updateJSON()">`;
+            textHTML += `<label>Text Language ${i}:</label>
+                        <input type="text" class="text" data-lang="${i}" oninput="updateJSON()">`;
+        }
+
+        return {
+            descriptionHTML,
+            textHTML
+        };
+    }
+
+    function addMenu(parentId, level) {
+        let parent = document.getElementById(parentId === 'menusContainer' ? 'menusContainer' : `sub${parentId}`);
+        let existingMenus = parent.getElementsByClassName('menu');
+        let maxDataValue = 0;
+
+        // Calculate the maximum data-value in existing menus
+        Array.from(existingMenus).forEach(menu => {
+            let value = parseInt(menu.getAttribute('data-value'), 10);
+            if (value > maxDataValue) {
+                maxDataValue = value;
+            }
+        });
+
+        // Set the next data-value by incrementing the maximum found value
+        let nextDataValue = maxDataValue + 1;
+
+        // Create a new menu element
+        let menuId = 'menu' + Date.now();
+        let div = document.createElement('div');
+        div.className = 'menu';
+        div.id = menuId;
+        div.setAttribute('data-value', nextDataValue);
+        div.innerHTML = `
+            <h2>Menu Level ${level}_${nextDataValue}</h2>
+            <div>${window.menuTemplate.descriptionHTML}</div>
+            <div>${window.menuTemplate.textHTML}</div>
+            
+            <label>Payload:</label>
+            <input type="text" oninput="updateJSON()">
+            <label>Active:</label>
+            <input type="checkbox" checked oninput="updateJSON()">
+            
+            <button type="button" onclick="addMenu('${menuId}', ${level + 1}); updateJSON();">Add Submenu</button>
+            <button type="button" onclick="removeMenu('${menuId}'); updateJSON();">Remove Menu</button>
+        `;
+
+        // Append the new menu to its parent
+        let subMenusContainer = document.createElement('div');
+        subMenusContainer.className = 'subMenus';
+        subMenusContainer.id = `sub${menuId}`;
+        div.appendChild(subMenusContainer);
+
+        parent.appendChild(div);
+    }
+
+    function removeMenu(menuId) {
+        let menu = document.getElementById(menuId);
+        if (menu) {
+            console.log('Removing menu with id:', menuId);
+
+            let parentId = menu.parentNode.id.startsWith('submenu') ? menu.parentNode.id : 'menusContainer';
+            console.log('Parent ID:', parentId);
+
+            let parent = menu.parentNode;
+            console.log('Parent Node:', parent);
+
+            // Log all siblings to debug the issue
+            console.log('All children of the parent node:');
+            Array.from(parent.children).forEach(child => {
+                console.log(child.id, child);
+            });
+
+            // Remove the menu
+            parent.removeChild(menu);
+
+            let siblings = Array.from(parent.children);
+            console.log('Remaining siblings:', siblings);
+            
+            // Update the data-value of each subsequent sibling
+            siblings.forEach((sibling, idx) => {
+                if (sibling.classList.contains('menu')) {
+                    // Calculate the new index for each sibling, ensuring it doesn't drop below 1
+                    let newIdx = Math.max(1, idx + 1);  // Adjust index to be 1-based
+                    sibling.setAttribute('data-value', newIdx.toString());
+                    console.log(`Updated data-value of ${sibling.id} to ${newIdx}`);
+                }
+            });
+
+        } else {
+            console.error('No menu found with id:', menuId);
+        }
+    }
+
+    function updateJSON() {
+        let jsonOutput = constructJSON(document.getElementById('menusContainer'));
+        document.getElementById('jsonOutput').value = JSON.stringify(jsonOutput, null, 2);
+    }
+
+    function constructJSON(element) {
+        if (!element) return []; // Return empty array if there's no element to process
+
+        let result = [];
+        let menus = element.children;
+
+        for (let menu of menus) {
+            // Process only menu items that are not classified as submenus themselves
+            if (!menu.classList.contains('subMenus')) {
+                let descriptions = Object.fromEntries(
+                    Array.from(menu.querySelectorAll('.description')).map(input => [input.dataset.lang, input.value])
+                );
+                let texts = Object.fromEntries(
+                    Array.from(menu.querySelectorAll('.text')).map(input => [input.dataset.lang, input.value])
+                );
+                let payload = menu.querySelector('input[type="text"]:not(.description):not(.text)').value;
+                let active = menu.querySelector('input[type="checkbox"]').checked;
+                
+                // Find submenus if they exist
+                let subMenus = menu.querySelector('.subMenus');
+
+                let content = subMenus ? constructJSON(subMenus) : []; // Recursively process submenus
+                
+                let menuData = {
+                    code: menu.getAttribute('data-value'),
+                    description: descriptions,
+                    text: texts,
+                    payload: payload,
+                    active: active,
+                    content: content
+                };
+                result.push(menuData);
+            }
+        }
+        return result;
+    }
+
+    function downloadJSON() {
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(document.getElementById('jsonOutput').value);
+        var downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "My_bot_config.json");
+        document.body.appendChild(downloadAnchorNode); // Required for Firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
+</script>
+</body>
+</html>

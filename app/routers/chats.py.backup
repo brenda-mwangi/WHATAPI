@@ -1,0 +1,194 @@
+from fastapi import APIRouter, status, Depends, HTTPException, Request, Response
+from app import models, schema, oath2
+from app.database import get_db
+from twilio.rest import Client
+from twilio.twiml.messaging_response import MessagingResponse
+import json, os
+router = APIRouter(
+        prefix="/chat",
+        tags=['Chat']
+)
+
+# Load chat configuration from JSON file
+with open('chat.json', 'r') as file:
+    chat_config = json.load(file)
+
+# In-memory store for user states
+user_states = {}
+
+@router.post('/receive')
+async def bot(request: Request):
+    form_data = await request.form()
+    incoming_msg = form_data.get('Body', '').lower()
+    from_number = form_data.get('From')
+    resp = MessagingResponse()
+    msg = resp.message()
+
+    # Initialize user state if not present
+    if from_number not in user_states:
+        user_states[from_number] = 'start_conversation'
+
+    # Retrieve current state of the user
+    state = user_states[from_number]
+
+    # Conversation logic based on state
+    if state in chat_config['whatsapp_bot']:
+        state_config = chat_config['whatsapp_bot'][state]
+        if state == 'start_conversation' and any(trigger in incoming_msg for trigger in state_config['trigger']):
+            user_states[from_number] = 'main_menu'
+            print(user_states[from_number])
+            print("*" + msg.body(state_config['response']))
+            msg.body(state_config['response'])
+
+        elif state == 'main_menu':
+            user_response = state_config['responses'].get(incoming_msg)
+            if user_response:
+                msg.body(user_response)
+                # Update user state as needed
+                # user_states[from_number] = 'next_state'
+            else:
+                msg.body(chat_config['whatsapp_bot']['invalid_input']['response'])
+        
+        elif state == 'awaiting_fundraiser_title':
+            # Assuming the user has entered the title for a new fundraiser
+            fundraiser_title = incoming_msg
+            user_states[from_number] = 'awaiting_fundraiser_goal'
+            response = chat_config['whatsapp_bot']['awaiting_fundraiser_goal']['response']
+            msg.body(response.format(fundraiser_title=fundraiser_title))
+
+        elif state == 'awaiting_fundraiser_goal':
+            # Assuming the user has entered the goal amount
+            fundraiser_goal = incoming_msg  # You might want to validate this is a number
+            user_states[from_number] = 'main_menu'  # Reset to main menu after completion
+            response = chat_config['whatsapp_bot']['awaiting_fundraiser_goal']['response']
+            msg.body(response.format(fundraiser_goal=fundraiser_goal))
+
+        # Add more elif clauses to handle other states like 'awaiting_fundraiser_id', 'awaiting_donation_amount', etc.
+
+        else:
+            # If the state is not recognized
+            msg.body("Sorry, I didn't understand that. Please try again or type 'Menu'.")
+
+    else:
+        # If the user's current state is not in the config file
+        msg.body("An error occurred. Please start over by typing 'Hi' or 'Hello'.")
+        user_states[from_number] = 'start_conversation'
+
+        # msg.body("I did not understand that command. Please type 'Menu' to see options.")
+    return Response(content=str(resp), media_type="application/xml")
+    
+    # Default response if no condition is met
+    # msg.body("I did not understand that command. Please type 'Menu' to see options.")
+    # return str(resp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @router.get("/")
+# def link_home():
+#     return {"Hello": "world"}
+
+# @router.post("/receive", status_code=status.HTTP_200_OK)
+# # def delete_link(link_id: str, db: Session = Depends(get_db), logged_in_user: int = Depends(oath2.get_current_user)):
+# async def receive_chat(request: Request):
+#     form_data = await request.form()
+#     sender = form_data.get("From")
+#     reciepient = form_data.get("To")
+#     message = form_data.get("Body")
+
+#     session_txt = session_txt +"*"+message 
+
+#     account_sid = 'AC6aa0e0c7c5d2d91d4cdf2f6af20428e7'
+#     auth_token = 'a0459be0cb77b36edecb305881510d1f'
+#     client = Client(account_sid, auth_token)
+
+#     resp = f'''<?xml version="1.0" encoding="UTF-8"?>
+# <Response>
+#     <Message>Your appointment is coming up on July 21 at 3PM. Mark this tweet for future.</Message>
+# </Response>'''
+
+#     return Response(content=resp, media_type="application/xml")
+

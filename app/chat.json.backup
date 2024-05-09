@@ -1,0 +1,54 @@
+{
+    "whatsapp_bot": {
+      "start_conversation": {
+        "trigger": ["hi", "hello", "start", "menu"],
+        "response": "Welcome to the Changalink Fundraiser System! What do you want to do today?:\n1. Start a Fundraiser\n2. Donate to a Fundraiser\n3. Check Fundraiser Status\n4. Help/Support\n5. Update Fundraiser Details\n6. Delete Fundraiser"
+      },
+      "main_menu": {
+        "options": {
+          "1": "Start a Fundraiser",
+          "2": "Donate to a Fundraiser",
+          "3": "Check Fundraiser Status",
+          "4": "Help/Support",
+          "5": "Update Fundraiser Details",
+          "6": "Delete Fundraiser"
+        },
+        "responses": {
+          "1": "You've selected to start a new fundraiser. Please enter the title of your fundraiser.",
+          "2": "You've chosen to donate to a fundraiser. Please enter the fundraiser ID.",
+          "3": "You've selected to check a fundraiser's status. Please enter the fundraiser ID.",
+          "4": "You've chosen Help/Support. How can we assist you today?",
+          "5": "You've chosen to update a fundraiser. Please enter the ID of the fundraiser you wish to update.",
+          "6": "You've chosen to delete a fundraiser. Please enter the ID of the fundraiser you wish to delete."
+        }
+      },
+      "awaiting_fundraiser_title": {
+        "response": "Title received: '{fundraiser_title}'.\nPlease enter the goal amount for your fundraiser."
+      },
+      "awaiting_fundraiser_goal": {
+        "response": "Fundraiser created successfully with a goal of {fundraiser_goal}. Returning to main menu."
+      },
+      "awaiting_fundraiser_id": {
+        "response": "Fundraiser ID received: '{fundraiser_id}'.\nPlease enter the amount you wish to donate."
+      },
+      "awaiting_donation_amount": {
+        "response": "Donation of {donation_amount} received for fundraiser {fundraiser_id}. Thank you for your generosity! Returning to main menu."
+      },
+      "awaiting_update_fundraiser_id": {
+        "response": "Please enter the new details for the fundraiser ID '{fundraiser_id}'."
+      },
+      "awaiting_delete_fundraiser_id": {
+        "response": "Please confirm you want to delete the fundraiser ID '{fundraiser_id}'. Type 'yes' to confirm, 'no' to cancel."
+      },
+      "update_fundraiser_confirmation": {
+        "response": "Fundraiser ID '{fundraiser_id}' updated successfully. Returning to main menu."
+      },
+      "delete_fundraiser_confirmation": {
+        "response": "Fundraiser ID '{fundraiser_id}' deleted successfully. Returning to main menu."
+      },
+      "invalid_input": {
+        "response": "Invalid Entry. Please choose a valid option from the menu."
+      }
+    }
+  }
+  

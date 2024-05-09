@@ -1,0 +1,43 @@
+{
+  "greeting":"Welcome to the Changalink Fundraiser System! What do you want to do today?:\n",
+  "trigger": ["hi", "hello", "start", "menu", "home"],
+  "main":"1. Start a Fundraiser\n2. Donate to a Fundraiser\n3. Check Fundraiser Status\n4. Help/Support\n5. Update Fundraiser Details\n6. Delete Fundraiser",
+  "start_fundraiser":[
+      "You've selected to start a new fundraiser. Please enter the title of your fundraiser.",
+      "Great👍🏻!\nProvide a short description for your fundraiser.",
+      "Type the mode of beneficiary payments. Valid inputs are (Mpesa, Airtel, Card)\n",
+      "Provide a beneficiary phone(0740730056)\n",
+      "Please enter the goal amount for your fundraiser",
+      "Fundraiser created successfully with a goal of {fundraiser_goal_amount}. Returning to main menu."
+  ],
+  "donate_to_fundraiser":[
+    "You've chosen to donate to a fundraiser. Please enter the fundraiser ID.",
+    "Fundraiser ID received: '{fundraiser_id}'.\nPlease enter the amount you wish to donate.",
+    "Donation of {donation_amount} received for fundraiser {fundraiser_id}. Thank you for your generosity! Returning to main menu."
+  ],
+  "check_fundraiser_status":[
+    "You've selected to check a fundraiser's status. Please enter the fundraiser ID.",
+    "Fundraiser ID received: '{fundraiser_id}'.\nYour fundraiser has 1000ksh as of 10/01/2020.",
+    "Do you want a detailed report?"
+  ],
+  "update_fundraiser":[
+    "You've chosen to update a fundraiser. Please enter the ID of the fundraiser you wish to update.",
+    "Please enter the new details for the fundraiser ID '{fundraiser_id}'.",
+    "Fundraiser ID '{fundraiser_id}' updated successfully. Returning to main menu."
+  ],
+  "delete_fundraiser":[
+    "You've chosen to delete a fundraiser. Please enter the ID of the fundraiser you wish to delete.",
+    "By deleteing this fundraiser, all existing funds will be sent to the beneficiary in less than 5 minutes.\n**This process can't be undone. Do you wish to proceed?**",
+    "Fundraiser ID '{fundraiser_id}' deleted successfully. Returning to main menu."
+  ],
+  "help_support":[
+    "You've chosen Help/Support. How can we assist you today?",
+    "What would you like us to improve on?",
+    "Thank you. Our customer care will get back to you shortly."  
+  ],
+  "misc": ["Do you wish to perform another task?"],
+  "invalid_input": {
+    "response": "Invalid Entry. Please choose a valid option from the menu."
+  },
+  "exit":"Thank you for choosing Changalink, your reliable fundraising partner."
+}

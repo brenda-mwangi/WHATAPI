@@ -1,11 +1,15 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import  OAuth2PasswordBearer
+# from jwt import JWTError, decode
 from jose import jwt,JWTError
 from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
-from app import schema, database, models
+from app.schema import TokenData
+from app import database, models
 from app.database  import get_db
+from app.models import TokenBlacklist
+
 oath2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 # SECRET KEY
 SECRET_KEY = "0d690e0500ca3761119ad0300a4a964a988078648b13001cdb735387208a0b3a84983847"
@@ -28,7 +32,7 @@ def create_access_token(data: dict):
 
     return encoded_jwt
 
-def verify_access_token(token: str, credentials_exception):
+def verify_access_token2(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
 
@@ -39,13 +43,35 @@ def verify_access_token(token: str, credentials_exception):
         if id is None or username is None or role is None:
             raise credentials_exception
 
-        token_data = schema.TokenData(id = id, username=username, role=role)
+        token_data = TokenData(id = id, username=username, role=role)
 
     except JWTError:
         raise credentials_exception
 
     return token_data
 
+def verify_access_token(token: str, db: Session = Depends(get_db), credentials_exception: HTTPException = HTTPException(status_code=401, detail="Could not validate credentials")):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+        id: str = payload.get("id")
+        username: str = payload.get("username")
+        role: str = payload.get("role")
+
+        if id is None or username is None or role is None:
+            raise credentials_exception
+
+        # Check if token is in the blacklist
+        is_blacklisted = db.query(TokenBlacklist).filter(TokenBlacklist.token == token).first()
+        if is_blacklisted:
+            raise credentials_exception
+
+        token_data = TokenData(id=id, username=username, role=role)
+
+    except JWTError:
+        raise credentials_exception
+
+    return token_data
 
 def get_current_user(token: str = Depends(oath2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail= "Could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
@@ -54,3 +80,4 @@ def get_current_user(token: str = Depends(oath2_scheme), db: Session = Depends(g
     user = db.query(models.User).filter(models.User.id == token.id).first()
 
     return user
+

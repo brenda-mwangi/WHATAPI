@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<!-- Coding by CodingNepal | www.codingnepalweb.com-->
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8">
-    <title> Login and Registration Form in HTML & CSS | CodingLab </title>
+    <title> Login and Registration | WhatAPI </title>
     <link rel="stylesheet" href="login & reg.css">
     <!-- Fontawesome CDN Link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -21,7 +20,7 @@
         </div>
       </div>
       <div class="back">
-        <!--<img class="backImg" src="images/backImg.jpg" alt="">-->
+        <img class="backImg" src="images/backImg.jpg" alt="">
         <div class="text">
           <span class="text-1">Complete miles of journey <br> with one step</span>
           <span class="text-2">Let's get started</span>
@@ -135,17 +134,23 @@
           method: 'POST',
           body: formData
       })
-      .then(response => response.json())
+      .then(response => {
+          if (response.ok) {
+              return response.json(); // Proceed to get the response data if status is OK
+          } else {
+              throw new Error('Failed to log in'); // Throw an error if response is not OK
+          }
+      })
       .then(data => {
           if (data.access_token) {
               alert('Login successful!');
-              // You might want to redirect the user or perform other actions
+              window.location.href = '/index.html'; // Redirect to the index page upon successful login
           } else {
               alert('Login failed: ' + data.detail);
           }
       })
       .catch(error => {
-          alert('Error: ' + error);
+          alert('Error: ' + error.message);
       });
   });
   </script>

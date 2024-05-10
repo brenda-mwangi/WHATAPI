@@ -4,32 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bot Configuration with Multilingual and Download Support</title>
-<style>
-    body { display: flex; }
-    #formContainer, #jsonContainer { width: 50%; padding: 10px; }
-    textarea { width: 100%; height: 90vh; }
-    .languageInput { margin-top: 10px; }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="formContainer">
-    <form id="botConfigForm">
-        <h1>Customize Your Bot</h1>
-        <label for="languageCount">Number of Languages:</label>
-        <input type="number" id="languageCount" value="2" min="1" max="10" onchange="prepareMenuTemplate();">
-        
-        <div id="menusContainer">
-            <!-- Nested menus will be added here -->
-        </div>
-        <button type="button" onclick="addMenu('menusContainer', 0); updateJSON();">Add Main Menu</button>
-        <button type="button" onclick="downloadJSON();">Download JSON</button>
-        <button type="submit">Submit Configuration</button>
-    </form>
-</div>
-
-<div id="jsonContainer">
-    <h1>JSON Preview</h1>
-    <textarea id="jsonOutput" readonly></textarea>
+<header>
+    <h1>Bot Configuration</h1>
+    <button onclick="logoutUser();">Logout</button>
+</header>
+<div class="content">
+    <div id="formContainer">
+        <form id="botConfigForm">
+            <label for="languageCount">Number of Languages:</label>
+            <input type="number" id="languageCount" value="2" min="1" max="10" onchange="prepareMenuTemplate();">
+            <div id="menusContainer">
+                <!-- Nested menus will be added here -->
+            </div>
+            <button type="button" onclick="addMenu('menusContainer', 0); updateJSON();">Add Main Menu</button>
+            <button type="button" onclick="downloadJSON();">Download JSON</button>
+            <button type="submit">Submit Configuration</button>
+        </form>
+    </div>
+    <div id="jsonContainer">
+        <h2>JSON Preview</h2>
+        <textarea id="jsonOutput" readonly></textarea>
+    </div>
 </div>
 
 <script>
@@ -141,7 +140,14 @@
 
     function updateJSON() {
         let jsonOutput = constructJSON(document.getElementById('menusContainer'));
-        document.getElementById('jsonOutput').value = JSON.stringify(jsonOutput, null, 2);
+        let jsonTextarea = document.getElementById('jsonOutput');
+        jsonTextarea.value = JSON.stringify(jsonOutput, null, 2);
+        autoResize(jsonTextarea);  // Call autoResize to adjust the height
+    }
+
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
     }
 
     function constructJSON(element) {

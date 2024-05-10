@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, BigInteger
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, BigInteger
 from database import Base
 from datetime import datetime, timedelta
 
@@ -28,6 +28,13 @@ class User(Base):
     # lastname = Column(String(length=50), nullable=False)
     # phone = Column(String(length=13), nullable=False, unique=True)
 
+class TokenBlacklist(Base):
+    __tablename__ = "token_blacklist"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+    token = Column(String, unique=True, index=True)
+    expires_at = Column(DateTime, default=datetime.now)
 
 # class ChangaLink(Base):
 #     __tablename__ = 'changalinks'

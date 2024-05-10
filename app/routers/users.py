@@ -1,7 +1,8 @@
 from fastapi import status, Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-
+from datetime import datetime
+from jose import jwt
 from app import models, oath2, schema, utils
 from app.database import get_db
 
@@ -122,3 +123,20 @@ def update_user_account(
                     return {key: e}
 
     return user
+
+
+@router.post("/logout", summary="User Logout")
+def logout(token: str = Depends(oath2.oath2_scheme), db: Session = Depends(get_db)):
+    """
+    Endpoint to logout a user by blacklisting their authentication token.
+    """
+    try:
+        payload = jwt.decode(token, oath2.SECRET_KEY, algorithms=[oath2.ALGORITHM])
+        expiration_date = payload.get('exp')
+        db.add(models.TokenBlacklist(token=token, expires_at=datetime.fromtimestamp(expiration_date)))
+        db.commit()
+        return {"message": "Logged out successfully"}
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
+    except jwt.JWTError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

@@ -21,12 +21,7 @@ def user_home():
     return {"Hello": "user"}
 
 
-@router.post(
-    "/create_account",
-    status_code=status.HTTP_201_CREATED,
-    response_model=schema.UserResponse,
-    summary="Create User Account",
-)
+@router.post( "/create-account", status_code=status.HTTP_201_CREATED, response_model=schema.UserResponse, summary="Create User Account")
 def create_user_account(user: schema.UserBase, db: Session = Depends(get_db)):
     """
     Endpoint to create a new user account.
@@ -45,7 +40,7 @@ def create_user_account(user: schema.UserBase, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Phone number or email is already in use",
+            detail="Email is already in use",
         )
 
     except Exception:

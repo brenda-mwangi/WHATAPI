@@ -20,7 +20,7 @@ def create_access_token(data: dict):
     to_encode = data.copy()
 
     # provide the time it's going to expire in i.e countdown from now
-    expire = datetime.utcnow() + timedelta(minutes = ACCESS_TOKEN_EXPIRE_MIN)
+    expire = datetime.now() + timedelta(minutes = ACCESS_TOKEN_EXPIRE_MIN)
     to_encode.update({"exp": expire})
 
     # this method will create the jwt token

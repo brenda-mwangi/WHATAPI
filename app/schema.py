@@ -30,33 +30,15 @@ class ModeOfPayment(str, Enum):
     airtel = "Airtel"
     card = "Card"
 
-class PhoneRequirements(BaseModel):
-    phone: str
-
-    @validator('phone')
-    def validate_phone_number(cls, v):
-        pattern = r'^(\+254\s?[17])\d{8}$'
-
-        if not re.fullmatch(pattern, v):
-            raise ValueError('Invalid phone number format. It should start with +254 and be followed by 1 or 7 and then 8 digits.')
-        return v
-
 class UserBase(BaseModel):
     id: int = None
-    firstname: constr(min_length=2, max_length=50) = Field(..., example="John")
-    lastname: constr(min_length=2, max_length=50) = Field(..., example="Doe")
-    phone: constr(strip_whitespace=True) = Field(..., example="1234567890")
+    username: constr(min_length=2, max_length=50) = Field(..., example="John")
     email: EmailStr = Field(..., example="john@example.com")
     password: constr(min_length=8) = Field(..., example="Pass@123*")
 
     @validator('password')
     def check_password_requirements(cls, v):
         PasswordRequirements(password=v)
-        return v
-
-    @validator('phone')
-    def check_phone(cls, v):
-        PhoneRequirements(phone=v)
         return v
 
 class UserLogin(BaseModel):
@@ -147,9 +129,8 @@ class UpdateLink(BaseModel):
         orm_mode = True
 
 class UserResponse(BaseModel):
-    firstname: str
-    lastname: str
-    phone: str
+    username: str
+    email: str
 
     class Config:
         orm_mode = True

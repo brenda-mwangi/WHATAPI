@@ -4,6 +4,8 @@
 import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+
 import uvicorn
 from models import Base
 from database import engine
@@ -56,7 +58,13 @@ app = FastAPI(
 
 # static_path = os.path.join(os.path.dirname(__file__), "static")
 # app.mount("/static", StaticFiles(directory=static_path), name="static")
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Specify the correct origins in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(links.router)
 app.include_router(users.router)
 app.include_router(WA_bridge.router)

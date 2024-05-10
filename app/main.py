@@ -17,7 +17,12 @@ path.append("/Users/charles/Desktop/code/WhatAPI") #macos
 from routers import users, links, auth, WA_bridge
 
 Base.metadata.create_all(bind=engine)
+
 tags_metadata = [
+    {
+        "name": "Authentication",
+        "description": "Manage authentication",
+    },
     {
         "name": "User",
         "description": "Operations for **users only**",
@@ -31,13 +36,13 @@ tags_metadata = [
         },
     },
     {
-        "name": "Authentication",
-        "description": "Manage authentication",
+        "name": "Bot Operations",
+        "description": "Bot Operations Available",
     }
 ]
 description = "The FundraiserBot is an innovative automated system meticulously crafted to revolutionize fundraising endeavors through the ubiquitous WhatsApp platform. It streamlines and simplifies the fundraising process by seamlessly integrating with WhatsApp, enabling effortless donation collection, transparent tracking of funds, and efficient communication with donors and beneficiaries. Its robust functionalities encompass personalized donation campaigns, real-time progress updates, and secure handling of contributions, empowering organizations and individuals to initiate and manage successful fundraising initiatives effortlessly."
 app = FastAPI(
-    title="Changalink API Documentation",
+    title="WhatAPI API Documentation",
     description=description,
     summary='"Empowering Causes, One Message at a Time."',
     version="1.0.",
@@ -65,6 +70,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.include_router(links.router)
 app.include_router(users.router)
 app.include_router(WA_bridge.router)

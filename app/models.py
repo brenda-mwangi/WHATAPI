@@ -25,17 +25,15 @@ class User(Base):
     role = Column(String(length=50), nullable=False, default="User")
     is_logged_in = Column(Boolean, nullable= False, default=False)
     time_registered = Column(BigInteger, nullable=False, default=default_date)
-    # lastname = Column(String(length=50), nullable=False)
-    # phone = Column(String(length=13), nullable=False, unique=True)
 
 class TokenBlacklist(Base):
     __tablename__ = "token_blacklist"
     __table_args__ = {'extend_existing': True}
 
-    id = Column(Integer, primary_key=True, index=True)
-    token = Column(String, unique=True, index=True)
-    expires_at = Column(DateTime, default=datetime.now)
-
+    id = Column(Integer, unique=True, primary_key=True, nullable= False, default=None)
+    token = Column(String, unique=True)
+    expires_at = Column(DateTime, default=default_date)
+    
 # class ChangaLink(Base):
 #     __tablename__ = 'changalinks'
 #     __table_args__ = {'extend_existing': True}

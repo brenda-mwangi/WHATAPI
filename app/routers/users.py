@@ -84,8 +84,7 @@ def delete_user_account(
     response_model=schema.UpdateUser,
     summary="Update User Account",
 )
-def update_user_account(
-    user_update: schema.UpdateUser,
+def update_user_account(user_update: schema.UpdateUser,
     user_id: int,
     db: Session = Depends(get_db),
     logged_in_user: int = Depends(oath2.get_current_user),
@@ -125,8 +124,8 @@ def update_user_account(
     return user
 
 
-@router.post("/logout", summary="User Logout")
-def logout(token: str = Depends(oath2.oath2_scheme), db: Session = Depends(get_db)):
+# @router.post("/logout", summary="User Logout")
+# def logout(token: str = Depends(oath2.oath2_scheme), db: Session = Depends(get_db)):
     """
     Endpoint to logout a user by blacklisting their authentication token.
     """

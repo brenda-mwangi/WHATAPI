@@ -1,10 +1,14 @@
-from fastapi import status, Depends, HTTPException, APIRouter
+from fastapi import status, Depends, HTTPException, APIRouter, Request, Form
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from datetime import datetime
 from jose import jwt
 from app import models, oath2, schema, utils
 from app.database import get_db
+from fastapi.responses import HTMLResponse
+# from fastapi.templating import Jinja2Templates
+import os
 
 router = APIRouter(
     prefix="/user",
@@ -21,27 +25,38 @@ def user_home():
     """
     return {"Hello": "user"}
 
+@router.get("/signup", response_class=HTMLResponse, summary="Signup page")
+def create_user_account_page(request: Request):
+    """
+    Endpoint to serve create a new user account page.
+    """
+    return utils.templates.TemplateResponse("signup.html", {"request": request})
 
 @router.post( "/create-account", status_code=status.HTTP_201_CREATED, response_model=schema.UserResponse, summary="Create User Account")
-def create_user_account(user: schema.UserBase, db: Session = Depends(get_db)):
+async def create_user_account(request: Request, username: str = Form(...), email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     """
     Endpoint to create a new user account.
     """
-    user.password = utils.hash(user.password)
+    hashed_password = utils.hash(password)  # Ensure you have a function to hash passwords properly
+    # return {"username": username, "email":email, "password":password}
 
     try:
-        new_user = models.User(**user.dict())
+        # Create a new user instance using the models.User model
+        new_user = models.User(username=username, email=email, password=hashed_password)
 
+        # Add the new user to the database
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
+
+        # Return the new user
         return new_user
 
     except IntegrityError:
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email is already in use",
+            detail="Email or username is already in use",
         )
 
     except Exception:
@@ -124,18 +139,22 @@ def update_user_account(user_update: schema.UpdateUser,
     return user
 
 
-# @router.post("/logout", summary="User Logout")
-# def logout(token: str = Depends(oath2.oath2_scheme), db: Session = Depends(get_db)):
+@router.get("/logout", summary="User Logout")
+# def logout(request: Request, token: str = Depends(oath2.oath2_scheme), db: Session = Depends(get_db)):
+def logout(request: Request):
     """
     Endpoint to logout a user by blacklisting their authentication token.
     """
     try:
-        payload = jwt.decode(token, oath2.SECRET_KEY, algorithms=[oath2.ALGORITHM])
-        expiration_date = payload.get('exp')
-        db.add(models.TokenBlacklist(token=token, expires_at=datetime.fromtimestamp(expiration_date)))
-        db.commit()
+        request.session['user'] = False
+        request.session['access_token'] = False
+
+        # payload = oath2.jwt.decode(token, oath2.SECRET_KEY, algorithms=[oath2.ALGORITHM])
+        # expiration_date = payload.get('exp')
+        # db.add(models.TokenBlacklist(token=token, expires_at=datetime.fromtimestamp(expiration_date)))
+        # db.commit()
         return {"message": "Logged out successfully"}
-    except jwt.ExpiredSignatureError:
+    except oath2.jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
-    except jwt.JWTError as e:
+    except oath2.jwt.JWTError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

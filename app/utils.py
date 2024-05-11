@@ -4,9 +4,13 @@ from passlib.context import CryptContext
 import uuid
 import requests
 import json
+from starlette.templating import Jinja2Templates
 
 pwd_ctxt = CryptContext(schemes=["bcrypt"], deprecated= "auto")
 base_url = "http://localhost:8000"
+
+# Template configuration
+templates = Jinja2Templates(directory="templates")
 
 # def chat_create_link(title, description, mode_of_beneficiary_payment, beneficiary_phone, target_amount):
 #     url = base_url+"/link/create_link"

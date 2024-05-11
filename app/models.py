@@ -19,7 +19,7 @@ class User(Base):
     __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, unique=True, primary_key=True, nullable= False, default=None)
-    username = Column(String(length=50), nullable=False)
+    username = Column(String(length=50), unique=True, nullable=False)
     email = Column(String(length=320), nullable=False, unique=True)
     password = Column(String(length=255), nullable=False)
     role = Column(String(length=50), nullable=False, default="User")

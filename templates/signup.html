@@ -3,24 +3,25 @@
   <head>
     <meta charset="UTF-8">
     <title> Login and Registration | WhatAPI </title>
-    <link rel="stylesheet" href="login & reg.css">
+    <link rel="stylesheet" href="/static/css/signup.css">
     <!-- Fontawesome CDN Link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    </head>
 <body>
+
   <div class="container">
     <input type="checkbox" id="flip">
     <div class="cover">
       <div class="front">
-        <img src="images/frontImg.jpg" alt="">
+        <img src="/static/images/frontImg.jpg" alt="">
         <div class="text">
           <span class="text-1">Every new friend is a <br> new adventure</span>
           <span class="text-2">Let's get connected</span>
         </div>
       </div>
       <div class="back">
-        <img class="backImg" src="images/backImg.jpg" alt="">
+        <img class="backImg" src="/static/images/backImg.jpg" alt="">
         <div class="text">
           <span class="text-1">Complete miles of journey <br> with one step</span>
           <span class="text-2">Let's get started</span>
@@ -31,7 +32,7 @@
         <div class="form-content">
           <div class="login-form">
             <div class="title">Login</div>
-            <form id="loginForm">
+            <form id="loginForm" action="/auth/login" method="post">
               <div class="input-boxes">
                   <div class="input-box">
                       <i class="fas fa-envelope"></i>
@@ -51,36 +52,36 @@
         </div>
         <div class="signup-form">
           <div class="title">Signup</div>
-          <form id="signupForm" action="#">
-            <div class="input-boxes">
-              <div class="input-box">
-                <i class="fas fa-user"></i>
-                <input type="text" name="username" placeholder="Username" required>
+            <form id="signupForm" action="/user/create-account" method="post">
+              <div class="input-boxes">
+                <div class="input-box">
+                  <i class="fas fa-user"></i>
+                  <input type="text" name="username" placeholder="Username" required>
+                </div>
+                <div class="input-box">
+                  <i class="fas fa-envelope"></i>
+                  <input type="text" name="email" placeholder="Email" required>
+                </div>
+                <div class="input-box">
+                  <i class="fas fa-lock"></i>
+                  <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="input-box">
+                  <i class="fas fa-lock"></i>
+                  <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                </div>
+                <div class="button input-box">
+                  <input type="submit" value="Submit">
+                </div>
+                <div class="text sign-up-text">Have an account? <label for="flip">SignIn now</label></div>
               </div>
-              <div class="input-box">
-                <i class="fas fa-envelope"></i>
-                <input type="text" name="email" placeholder="Email" required>
-              </div>
-              <div class="input-box">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="password" placeholder="Password" required>
-              </div>
-              <div class="input-box">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-              </div>
-              <div class="button input-box">
-                <input type="submit" value="Submit">
-              </div>
-              <div class="text sign-up-text">Have an account? <label for="flip">SignIn now</label></div>
-            </div>
-          </form>          
+            </form>          
     </div>
     </div>
     </div>
   </div>
 
-  <script>
+  <!-- <script>
     let baseUrl = "http://localhost:8000"
     document.getElementById('signupForm').addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent the default form submission
@@ -128,7 +129,7 @@
     });
     
     document.getElementById('loginForm').addEventListener('submit', function(event) {
-      event.preventDefault();
+      // event.preventDefault();
       const formData = new FormData(this);
       fetch(`${baseUrl}/auth/login`, {
           method: 'POST',
@@ -142,18 +143,30 @@
           }
       })
       .then(data => {
-          if (data.access_token) {
-              alert('Login successful!');
-              window.location.href = '/index.html'; // Redirect to the index page upon successful login
+          if (data.access_token && data.user) {
+              localStorage.setItem('access_token', data.access_token)
+              console.log(localStorage.getItem('access_token'))
+
+              document.getElementById('notification').innerHTML = 'Login successful!';
+              document.getElementById('notification').style.display = 'block';
+              setTimeout(() => {
+
+                window.location.href="/bot/create-bot";
+
+            }, 3000);
+
           } else {
-              alert('Login failed: ' + data.detail);
+              document.getElementById('notification').innerHTML = 'Login failed: ' + data.detail;
+              document.getElementById('notification').style.display = 'block';
           }
       })
+
       .catch(error => {
           alert('Error: ' + error.message);
       });
   });
-  </script>
+  
+  </script> -->
   
 </body>
 </html>

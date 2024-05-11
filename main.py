@@ -6,9 +6,9 @@ from pydantic import BaseModel
 import uvicorn
 import json
 import requests
-
 app = FastAPI()
 
+# Mount static files
 @app.post("/items/")
 async def create_item(request: Request):
     # Reading and printing request body

@@ -5,16 +5,17 @@ import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 from models import Base
 from database import engine
-
+from oath2 import SECRET_KEY
 from sys import path
 # path.append("/home/d43m0n4/Desktop/code/WhatAPI")
 # path.append("/opt/render/project/src/")
-path.append("/Users/charles/Desktop/code/WhatAPI") #macos
-from routers import users, links, auth, WA_bridge
+# path.append("/Users/charles/Desktop/code/WhatAPI") #macos
+from routers import users, links, auth, bot_config
 
 Base.metadata.create_all(bind=engine)
 
@@ -61,8 +62,11 @@ app = FastAPI(
     openapi_tags=tags_metadata,
               )
 
-# static_path = os.path.join(os.path.dirname(__file__), "static")
-# app.mount("/static", StaticFiles(directory=static_path), name="static")
+app = FastAPI()
+
+static_path = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Specify the correct origins in production
@@ -70,10 +74,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
 app.include_router(links.router)
 app.include_router(users.router)
-app.include_router(WA_bridge.router)
+app.include_router(bot_config.router)
 app.include_router(auth.router)
 
 if __name__ == "__main__":

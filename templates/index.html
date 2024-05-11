@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bot Configuration with Multilingual and Download Support</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 <header>
     <h1>Bot Configuration</h1>
-    <button onclick="logoutUser();">Logout</button>
+    <button><a href="/user/logout">Logout</a></button>
 </header>
 <div class="content">
     <div id="formContainer">
@@ -33,6 +33,9 @@
 
 <script>
     let menuCounter = {};
+    console.log(localStorage.getItem('access_token'))
+
+
     function prepareMenuTemplate() {
         const languageCount = parseInt(document.getElementById('languageCount').value, 10);
         window.menuTemplate = generateMenuTemplate(languageCount);
@@ -196,6 +199,8 @@
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
     }
+
 </script>
+
 </body>
 </html>

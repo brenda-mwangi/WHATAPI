@@ -32,14 +32,20 @@ class ModeOfPayment(str, Enum):
 
 class UserBase(BaseModel):
     id: int = None
-    username: constr(min_length=2, max_length=50) = Field(..., example="John")
-    email: EmailStr = Field(..., example="john@example.com")
-    password: constr(min_length=8) = Field(..., example="Pass@123*")
+    username: str
+    email: EmailStr
+    password: str
 
-    @validator('password')
-    def check_password_requirements(cls, v):
-        PasswordRequirements(password=v)
-        return v
+# class UserBase(BaseModel):
+#     id: int = None
+#     username: constr(min_length=2, max_length=50) = Field(..., example="John")
+#     email: EmailStr = Field(..., example="john@example.com")
+#     password: constr(min_length=8) = Field(..., example="Pass@123*")
+
+#     @validator('password')
+#     def check_password_requirements(cls, v):
+#         PasswordRequirements(password=v)
+#         return v
 
 class UserLogin(BaseModel):
     """Handles user login data"""
@@ -149,6 +155,7 @@ class LinkResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    user: int
 
 class TokenData:
     def __init__(self, id: Optional[int], username: Optional[str], role: Optional[str]):

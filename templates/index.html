@@ -3,198 +3,1014 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bot Configuration with Multilingual and Download Support</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/style.css">
+<title>WhatsApp Bot Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+header {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    color: #333;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.logout-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 300px 1fr 350px;
+    gap: 20px;
+    align-items: start;
+}
+
+/* Setup Panel */
+.setup-panel {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.setup-panel h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.language-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.language-chip {
+    background: #667eea;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.add-menu-btn {
+    width: 100%;
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.add-menu-btn:hover {
+    background: #20bd5a;
+    transform: translateY(-2px);
+}
+
+/* Builder Area */
+.builder-area {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    min-height: 600px;
+}
+
+.builder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.builder-header h2 {
+    font-size: 20px;
+    color: #333;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 10px;
+}
+
+.toggle-btn {
+    padding: 8px 16px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.toggle-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #999;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: #999;
+}
+
+/* Menu Card */
+.menu-card {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.menu-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.menu-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.menu-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-icon {
+    background: #667eea;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.menu-title h3 {
+    font-size: 16px;
+    color: #333;
+}
+
+.menu-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-size: 16px;
+}
+
+.icon-btn:hover {
+    background: #f0f0f0;
+    transform: scale(1.1);
+}
+
+.icon-btn.delete:hover {
+    background: #fee;
+    color: #e53e3e;
+}
+
+.menu-content {
+    display: grid;
+    gap: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group input,
+.input-group textarea {
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border 0.3s;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.input-group textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.multilang-inputs {
+    display: grid;
+    gap: 10px;
+}
+
+.lang-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lang-label {
+    background: #667eea;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 50px;
+    text-align: center;
+}
+
+.lang-input input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #25D366;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.submenu-container {
+    margin-left: 30px;
+    margin-top: 15px;
+    padding-left: 15px;
+    border-left: 3px solid #667eea;
+}
+
+.add-submenu-btn {
+    background: white;
+    color: #667eea;
+    border: 2px dashed #667eea;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    width: 100%;
+    margin-top: 15px;
+    transition: all 0.3s;
+}
+
+.add-submenu-btn:hover {
+    background: #f0f4ff;
+}
+
+/* Preview Panel */
+.preview-panel {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 20px;
+}
+
+.preview-panel h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
+}
+
+.phone-mockup {
+    background: #f0f0f0;
+    border: 3px solid #333;
+    border-radius: 30px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.phone-screen {
+    background: #e5ddd5;
+    border-radius: 15px;
+    padding: 15px;
+    min-height: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.chat-message {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    max-width: 85%;
+}
+
+.bot-message {
+    background: #dcf8c6;
+}
+
+.message-text {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.message-options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.option-btn {
+    background: white;
+    border: 1px solid #667eea;
+    color: #667eea;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.option-btn:hover {
+    background: #667eea;
+    color: white;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.action-btn.primary {
+    background: #667eea;
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: #5568d3;
+}
+
+.action-btn.secondary {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.action-btn.secondary:hover {
+    background: #f0f4ff;
+}
+
+.json-preview {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 15px;
+    display: none;
+}
+
+.json-preview.show {
+    display: block;
+}
+
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .preview-panel {
+        position: static;
+    }
+}
+</style>
 </head>
 <body>
-<header>
-    <h1>Bot Configuration</h1>
-    <button><a href="/user/logout">Logout</a></button>
-</header>
-<div class="content">
-    <div id="formContainer">
-        <form id="botConfigForm">
-            <label for="languageCount">Number of Languages:</label>
-            <input type="number" id="languageCount" value="2" min="1" max="10" onchange="prepareMenuTemplate();">
-            <div id="menusContainer">
-                <!-- Nested menus will be added here -->
+<div class="container">
+    <header>
+        <h1>🤖 WhatsApp Bot Builder</h1>
+        <button class="logout-btn" onclick="window.location.href='/user/logout'">Logout</button>
+    </header>
+
+    <div class="main-content">
+        <!-- Setup Panel -->
+        <div class="setup-panel">
+            <h2>⚙️ Bot Setup</h2>
+            
+            <div class="form-group">
+                <label>Bot Type</label>
+                <select id="botType" onchange="updatePreview()">
+                    <option value="support">Customer Support</option>
+                    <option value="ecommerce">E-commerce</option>
+                    <option value="booking">Booking/Reservation</option>
+                    <option value="game">Game Bot</option>
+                    <option value="custom">Custom</option>
+                </select>
             </div>
-            <button type="button" onclick="addMenu('menusContainer', 0); updateJSON();">Add Main Menu</button>
-            <button type="button" onclick="downloadJSON();">Download JSON</button>
-            <button type="submit">Submit Configuration</button>
-        </form>
-    </div>
-    <div id="jsonContainer">
-        <h2>JSON Preview</h2>
-        <textarea id="jsonOutput" readonly></textarea>
+
+            <div class="form-group">
+                <label>Number of Languages</label>
+                <input type="number" id="languageCount" value="2" min="1" max="5" onchange="updateLanguages()">
+                <div class="language-chips" id="languageChips">
+                    <span class="language-chip">EN</span>
+                    <span class="language-chip">ES</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Preview Language</label>
+                <select id="previewLanguage" onchange="updatePreview()">
+                    <option value="1">Language 1</option>
+                    <option value="2">Language 2</option>
+                </select>
+            </div>
+
+            <button class="add-menu-btn" onclick="addMainMenu()">
+                ➕ Add Main Menu
+            </button>
+        </div>
+
+        <!-- Builder Area -->
+        <div class="builder-area">
+            <div class="builder-header">
+                <h2>📝 Build Your Bot</h2>
+                <div class="view-toggle">
+                    <button class="toggle-btn active" onclick="switchView('flow')">Flow View</button>
+                    <button class="toggle-btn" onclick="switchView('json')">JSON View</button>
+                </div>
+            </div>
+
+            <div id="flowView">
+                <div id="menusContainer" class="menus-container">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <h3>Start Building Your Bot</h3>
+                        <p>Click "Add Main Menu" to create your first menu option</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="jsonView" style="display: none;">
+                <textarea id="jsonOutput" style="width: 100%; min-height: 500px; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px;"></textarea>
+            </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel">
+            <h2>📱 WhatsApp Preview</h2>
+            
+            <div class="phone-mockup">
+                <div class="phone-screen" id="phoneScreen">
+                    <div class="chat-message bot-message">
+                        <div class="message-text">Hello! Welcome to our bot. Please select an option:</div>
+                        <div class="message-options" id="previewOptions">
+                            <!-- Options will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn primary" onclick="submitConfiguration()">
+                    💾 Save Configuration
+                </button>
+                <button class="action-btn secondary" onclick="downloadJSON()">
+                    📥 Download JSON
+                </button>
+                <button class="action-btn secondary" onclick="toggleJSON()">
+                    👁️ Toggle JSON
+                </button>
+            </div>
+
+            <div class="json-preview" id="jsonPreview"></div>
+        </div>
     </div>
 </div>
 
 <script>
-let menuCounter = {};
+let menuIdCounter = 0;
+let botConfig = [];
 
-// initialize template on load using current languageCount value
-document.addEventListener("DOMContentLoaded", () => {
-  prepareMenuTemplate();
-  // optionally auto-add a starter menu so UI isn't empty:
-  // addMenu('menusContainer', 0);
-});
-
-// log token for dev debugging
-console.log(localStorage.getItem('access_token'));
-
-function prepareMenuTemplate() {
-    const languageCount = parseInt(document.getElementById('languageCount').value, 10) || 1;
-    window.menuTemplate = generateMenuTemplate(languageCount);
-    console.log('Template prepared for', languageCount, 'languages');
-}
-
-function generateMenuTemplate(languageCount) {
-    let descriptionHTML = '';
-    let textHTML = '';
-    for (let i = 1; i <= languageCount; i++) {
-        descriptionHTML += `<label>Description Language ${i}:</label>
-                            <input type="text" class="description" data-lang="${i}" oninput="updateJSON()">`;
-        textHTML += `<label>Text Language ${i}:</label>
-                     <input type="text" class="text" data-lang="${i}" oninput="updateJSON()">`;
+function updateLanguages() {
+    const count = parseInt(document.getElementById('languageCount').value) || 1;
+    const chips = document.getElementById('languageChips');
+    const previewSelect = document.getElementById('previewLanguage');
+    
+    chips.innerHTML = '';
+    previewSelect.innerHTML = '';
+    
+    const langs = ['EN', 'ES', 'FR', 'DE', 'IT', 'PT', 'RU', 'ZH', 'JA', 'KO'];
+    for (let i = 0; i < count; i++) {
+        chips.innerHTML += `<span class="language-chip">${langs[i] || 'L' + (i+1)}</span>`;
+        previewSelect.innerHTML += `<option value="${i+1}">Language ${i+1} (${langs[i] || 'L' + (i+1)})</option>`;
     }
-    return { descriptionHTML, textHTML };
-}
-
-function addMenu(parentId, level) {
-    // ensure template exists
-    if (!window.menuTemplate) {
-        prepareMenuTemplate();
-    }
-
-    // find parent container
-    const parent = document.getElementById(parentId === 'menusContainer' ? 'menusContainer' : `sub${parentId}`);
-    if (!parent) {
-        console.error('Parent container not found for', parentId);
-        return;
-    }
-
-    let existingMenus = parent.getElementsByClassName('menu');
-    let maxDataValue = 0;
-    Array.from(existingMenus).forEach(menu => {
-        let value = parseInt(menu.getAttribute('data-value'), 10);
-        if (!isNaN(value) && value > maxDataValue) maxDataValue = value;
-    });
-    let nextDataValue = maxDataValue + 1;
-
-    let menuId = 'menu' + Date.now();
-    let div = document.createElement('div');
-    div.className = 'menu';
-    div.id = menuId;
-    div.setAttribute('data-value', nextDataValue);
-
-    div.innerHTML = `
-        <h2>Menu Level ${level}_${nextDataValue}</h2>
-        <div class="descriptions">${window.menuTemplate.descriptionHTML}</div>
-        <div class="texts">${window.menuTemplate.textHTML}</div>
-
-        <label>Payload:</label>
-        <input type="text" class="payload" oninput="updateJSON()">
-        <label>Active:</label>
-        <input type="checkbox" class="active" checked oninput="updateJSON()">
-
-        <button type="button" onclick="addMenu('${menuId}', ${level + 1}); updateJSON();">Add Submenu</button>
-        <button type="button" onclick="removeMenu('${menuId}'); updateJSON();">Remove Menu</button>
-    `;
-
-    let subMenusContainer = document.createElement('div');
-    subMenusContainer.className = 'subMenus';
-    subMenusContainer.id = `sub${menuId}`;
-    div.appendChild(subMenusContainer);
-
-    parent.appendChild(div);
+    
     updateJSON();
+}
+
+function addMainMenu() {
+    const container = document.getElementById('menusContainer');
+    const emptyState = container.querySelector('.empty-state');
+    if (emptyState) emptyState.remove();
+    
+    const menuId = ++menuIdCounter;
+    const languageCount = parseInt(document.getElementById('languageCount').value) || 1;
+    
+    const menuCard = createMenuCard(menuId, 0, languageCount);
+    container.appendChild(menuCard);
+    
+    updateJSON();
+    updatePreview();
+}
+
+function createMenuCard(menuId, level, languageCount) {
+    const div = document.createElement('div');
+    div.className = 'menu-card';
+    div.id = `menu-${menuId}`;
+    div.setAttribute('data-value', menuId);
+    div.setAttribute('data-level', level);
+    
+    let descriptionInputs = '';
+    let textInputs = '';
+    
+    for (let i = 1; i <= languageCount; i++) {
+        descriptionInputs += `
+            <div class="lang-input">
+                <span class="lang-label">L${i}</span>
+                <input type="text" class="description" data-lang="${i}" placeholder="Description for language ${i}" oninput="updateJSON(); updatePreview();">
+            </div>
+        `;
+        
+        textInputs += `
+            <div class="lang-input">
+                <span class="lang-label">L${i}</span>
+                <input type="text" class="text" data-lang="${i}" placeholder="Button text for language ${i}" oninput="updateJSON(); updatePreview();">
+            </div>
+        `;
+    }
+    
+    div.innerHTML = `
+        <div class="menu-card-header">
+            <div class="menu-title">
+                <div class="menu-icon">${level === 0 ? '📋' : '↳'}</div>
+                <h3>Menu ${menuId}</h3>
+            </div>
+            <div class="menu-actions">
+                <button class="icon-btn" onclick="duplicateMenu('menu-${menuId}')" title="Duplicate">📋</button>
+                <button class="icon-btn delete" onclick="removeMenu('menu-${menuId}')" title="Delete">🗑️</button>
+            </div>
+        </div>
+        
+        <div class="menu-content">
+            <div class="input-group">
+                <label>📝 Description (shown to user)</label>
+                <div class="multilang-inputs">
+                    ${descriptionInputs}
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>🔘 Button Text</label>
+                <div class="multilang-inputs">
+                    ${textInputs}
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>⚡ Payload (action identifier)</label>
+                <input type="text" class="payload" placeholder="e.g., MENU_SUPPORT, START_ORDER" oninput="updateJSON()">
+            </div>
+            
+            <div class="toggle-switch">
+                <label style="font-size: 14px; color: #666;">Active</label>
+                <label class="switch">
+                    <input type="checkbox" class="active" checked onchange="updateJSON(); updatePreview();">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <button class="add-submenu-btn" onclick="addSubmenu('menu-${menuId}')">
+            ➕ Add Submenu
+        </button>
+        
+        <div class="submenu-container" id="submenu-${menuId}"></div>
+    `;
+    
+    return div;
+}
+
+function addSubmenu(parentMenuId) {
+    const parent = document.getElementById(parentMenuId);
+    const submenuContainer = document.getElementById('submenu-' + parentMenuId.replace('menu-', ''));
+    const level = parseInt(parent.getAttribute('data-level')) + 1;
+    const languageCount = parseInt(document.getElementById('languageCount').value) || 1;
+    
+    const menuId = ++menuIdCounter;
+    const menuCard = createMenuCard(menuId, level, languageCount);
+    submenuContainer.appendChild(menuCard);
+    
+    updateJSON();
+    updatePreview();
 }
 
 function removeMenu(menuId) {
-    let menu = document.getElementById(menuId);
-    if (!menu) {
-        console.error('No menu found with id:', menuId);
-        return;
+    const menu = document.getElementById(menuId);
+    if (menu) {
+        menu.remove();
+        updateJSON();
+        updatePreview();
+        
+        const container = document.getElementById('menusContainer');
+        if (container.children.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">💬</div>
+                    <h3>Start Building Your Bot</h3>
+                    <p>Click "Add Main Menu" to create your first menu option</p>
+                </div>
+            `;
+        }
     }
-    let parent = menu.parentNode;
-    parent.removeChild(menu);
+}
 
-    // reindex remaining siblings
-    let siblings = Array.from(parent.children).filter(c => c.classList && c.classList.contains('menu'));
-    siblings.forEach((sibling, idx) => {
-        let newIdx = Math.max(1, idx + 1);
-        sibling.setAttribute('data-value', newIdx.toString());
-        // also update the heading if you want:
-        let h2 = sibling.querySelector('h2');
-        if (h2) h2.textContent = h2.textContent.replace(/Level\s+\S+/, `Level_${newIdx}`);
+function duplicateMenu(menuId) {
+    const menu = document.getElementById(menuId);
+    const parent = menu.parentNode;
+    const level = parseInt(menu.getAttribute('data-level'));
+    const languageCount = parseInt(document.getElementById('languageCount').value) || 1;
+    
+    const newMenuId = ++menuIdCounter;
+    const newMenu = createMenuCard(newMenuId, level, languageCount);
+    
+    // Copy values
+    const descriptions = menu.querySelectorAll('.description');
+    const texts = menu.querySelectorAll('.text');
+    const payload = menu.querySelector('.payload');
+    const active = menu.querySelector('.active');
+    
+    descriptions.forEach((desc, idx) => {
+        const newDesc = newMenu.querySelectorAll('.description')[idx];
+        if (newDesc) newDesc.value = desc.value;
     });
-
+    
+    texts.forEach((text, idx) => {
+        const newText = newMenu.querySelectorAll('.text')[idx];
+        if (newText) newText.value = text.value;
+    });
+    
+    if (payload) {
+        const newPayload = newMenu.querySelector('.payload');
+        if (newPayload) newPayload.value = payload.value + '_COPY';
+    }
+    
+    if (active) {
+        const newActive = newMenu.querySelector('.active');
+        if (newActive) newActive.checked = active.checked;
+    }
+    
+    parent.insertBefore(newMenu, menu.nextSibling);
     updateJSON();
-}
-
-function updateJSON() {
-    const jsonOutput = constructJSON(document.getElementById('menusContainer'));
-    const jsonTextarea = document.getElementById('jsonOutput');
-    jsonTextarea.value = JSON.stringify(jsonOutput, null, 2);
-    autoResize(jsonTextarea);
-}
-
-function autoResize(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = Math.max(textarea.scrollHeight, 100) + 'px';
+    updatePreview();
 }
 
 function constructJSON(element) {
     if (!element) return [];
-
+    
     let result = [];
-    let menus = element.children;
-
+    const menus = Array.from(element.children).filter(child => child.classList.contains('menu-card'));
+    
     for (let menu of menus) {
-        if (!menu.classList.contains('subMenus')) {
-            let descriptions = Object.fromEntries(
-                Array.from(menu.querySelectorAll('.description')).map(input => [input.dataset.lang, input.value || ""])
-            );
-            let texts = Object.fromEntries(
-                Array.from(menu.querySelectorAll('.text')).map(input => [input.dataset.lang, input.value || ""])
-            );
-
-            let payloadInput = menu.querySelector('input.payload') || menu.querySelector('input[type="text"]:not(.description):not(.text)');
-            let payload = payloadInput ? payloadInput.value : '';
-
-            let activeInput = menu.querySelector('input.active') || menu.querySelector('input[type="checkbox"]');
-            let active = activeInput ? activeInput.checked : false;
-
-            let subMenus = menu.querySelector('.subMenus');
-            let content = subMenus ? constructJSON(subMenus) : [];
-
-            let menuData = {
-                code: menu.getAttribute('data-value'),
-                description: descriptions,
-                text: texts,
-                payload: payload,
-                active: active,
-                content: content
-            };
-            result.push(menuData);
-        }
+        const descriptions = {};
+        const texts = {};
+        
+        menu.querySelectorAll('.description').forEach(input => {
+            descriptions[input.dataset.lang] = input.value || "";
+        });
+        
+        menu.querySelectorAll('.text').forEach(input => {
+            texts[input.dataset.lang] = input.value || "";
+        });
+        
+        const payload = menu.querySelector('.payload')?.value || '';
+        const active = menu.querySelector('.active')?.checked || false;
+        
+        const submenuContainer = menu.querySelector('.submenu-container');
+        const content = submenuContainer ? constructJSON(submenuContainer) : [];
+        
+        result.push({
+            code: menu.getAttribute('data-value'),
+            description: descriptions,
+            text: texts,
+            payload: payload,
+            active: active,
+            content: content
+        });
     }
+    
     return result;
 }
 
+function updateJSON() {
+    const container = document.getElementById('menusContainer');
+    botConfig = constructJSON(container);
+    
+    const jsonOutput = document.getElementById('jsonOutput');
+    const jsonPreview = document.getElementById('jsonPreview');
+    
+    const formatted = JSON.stringify(botConfig, null, 2);
+    jsonOutput.value = formatted;
+    jsonPreview.textContent = formatted;
+}
+
+function updatePreview() {
+    const previewLang = document.getElementById('previewLanguage').value;
+    const optionsDiv = document.getElementById('previewOptions');
+    
+    optionsDiv.innerHTML = '';
+    
+    const container = document.getElementById('menusContainer');
+    const mainMenus = Array.from(container.children).filter(child => child.classList.contains('menu-card'));
+    
+    mainMenus.forEach(menu => {
+        const textInput = Array.from(menu.querySelectorAll('.text')).find(input => input.dataset.lang === previewLang);
+        const active = menu.querySelector('.active')?.checked;
+        
+        if (textInput && textInput.value && active) {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = textInput.value;
+            optionsDiv.appendChild(btn);
+        }
+    });
+    
+    if (optionsDiv.children.length === 0) {
+        optionsDiv.innerHTML = '<div style="color: #999; font-size: 13px; text-align: center; padding: 10px;">No active menu options</div>';
+    }
+}
+
+function switchView(view) {
+    const flowView = document.getElementById('flowView');
+    const jsonView = document.getElementById('jsonView');
+    const buttons = document.querySelectorAll('.toggle-btn');
+    
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    if (view === 'flow') {
+        flowView.style.display = 'block';
+        jsonView.style.display = 'none';
+        buttons[0].classList.add('active');
+    } else {
+        flowView.style.display = 'none';
+        jsonView.style.display = 'block';
+        buttons[1].classList.add('active');
+        updateJSON();
+    }
+}
+
+function toggleJSON() {
+    const jsonPreview = document.getElementById('jsonPreview');
+    jsonPreview.classList.toggle('show');
+    updateJSON();
+}
+
 function downloadJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(document.getElementById('jsonOutput').value);
+    updateJSON();
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(botConfig, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "My_bot_config.json");
+    downloadAnchorNode.setAttribute("download", "whatsapp_bot_config.json");
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
+
+function submitConfiguration() {
+    updateJSON();
+    
+    // Get the access token
+    const token = localStorage.getItem('access_token');
+    
+    // Submit to your FastAPI backend
+    fetch('/api/bot/config', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            bot_type: document.getElementById('botType').value,
+            language_count: parseInt(document.getElementById('languageCount').value),
+            configuration: botConfig
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('✅ Bot configuration saved successfully!');
+        console.log('Saved config:', data);
+    })
+    .catch(error => {
+        alert('❌ Error saving configuration: ' + error.message);
+        console.error('Error:', error);
+    });
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => {
+    updateLanguages();
+    updateJSON();
+});
+
 </script>
-
-
 </body>
 </html>

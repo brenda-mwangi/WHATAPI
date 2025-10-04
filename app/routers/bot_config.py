@@ -21,11 +21,12 @@ def create_bot_page(request: Request, db: Session = Depends(get_db), logged_in_u
     """
     Endpoint to serve create a new bot account.
     """
-    return templates.TemplateResponse("working.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request})
 
 # @router.get("/create-bot/{user_id}")
 # def create_bot(user_id: int):
 #     # Process with the user_id
+#     print(f"Creating bot for user ID: {user_id}")
 #     return {"message": f"Bot creation page for user {user_id}"}
 
 # @router.get("/create-bot/{user_id}", status_code=status.HTTP_201_CREATED, response_model=schema.UpdateUser, summary="User's Home")
@@ -47,64 +48,20 @@ def create_bot_page(request: Request, db: Session = Depends(get_db), logged_in_u
 
 #     return FileResponse('../index.html')
 
+# @router.post("/create-bot", status_code=status.HTTP_201_CREATED, response_model=schema.ShowBot, summary="Create a new bot")
+# def create_bot(bot: schema.Bot, db: Session = Depends(get_db), logged_in_user: models.User = Depends(oath2.get_current_user)):
+#     """ Endpoint to create a new bot account. """
 
-# @router.post("/create_link", status_code=status.HTTP_201_CREATED, response_model=schema.LinkResponse)
-# async def create_link(changalink: schema.LinkBase, db: Session = Depends(get_db)):  #, logged_in_user: int = Depends(oath2.get_current_user)):
 #     try:
-#         new_link = models.ChangaLink(**changalink.dict())
-
-#         db.add(new_link)
+#         new_bot = models.Bot(owner_id=logged_in_user.id, **bot.dict())
+#         db.add(new_bot)
 #         db.commit()
-#         db.refresh(new_link)
-#         return new_link
-
+#         db.refresh(new_bot)
 #     except IntegrityError as e:
 #         db.rollback()
-#         raise HTTPException(detail = "Please try again", status_code = status.HTTP_400_BAD_REQUEST)
-
-#     except Exception as e:
-#         db.rollback()
-#         raise HTTPException(detail="Invalid link data", status_code=status.HTTP_400_BAD_REQUEST)
-
-# @router.delete("/delete_link/{link_id}", status_code=status.HTTP_204_NO_CONTENT)
-# def delete_link(link_id: str, db: Session = Depends(get_db), logged_in_user: int = Depends(oath2.get_current_user)):
-#     link = db.query(models.ChangaLink).filter(models.ChangaLink.id == link_id).first()
-
-#     if link == None:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Link not found")
-#     else:
-#         if link.owner_id != logged_in_user.id:
-#             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to perform that action")
+#         if 'unique constraint' in str(e.orig):
+#             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Bot with this name already exists.")
 #         else:
-#             db.delete(link)
-#             db.commit()
+#             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An error occurred while creating the bot.")
 
-# @router.put("/update_link/{link_id}", status_code=status.HTTP_200_OK, response_model=schema.UpdateLink)
-# def update_link(link: schema.UpdateLink, link_id: str, db: Session = Depends(get_db), logged_in_user: int = Depends(oath2.get_current_user)):
-#     link_query = db.query(models.ChangaLink).filter(models.ChangaLink.id == link_id)
-
-#     link_details = link_query.first()
-
-#     if link_details == None:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Could not update ChangaLink since it was not found")
-#     else:
-#         if link_details.owner_id != logged_in_user.id:
-#             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not authorized to perform that action")
-#         else:
-#             link_data = link.dict()
-
-#             for key in link_data.keys():
-#                 if key not in ["title","description","mode_of_beneficiary_payment","beneficiary_phone","target_amount"]:
-#                     raise ValueError(f'Invalid entry found: {key}. Only "title","description","mode_of_beneficiary_payment","beneficiary_phone","target_amount" are allowed.')
-#                 else:
-#                     try:
-#                         if link_data[key] is None or link_data[key] == '':
-#                             pass
-#                         else:
-#                             link_query.update({key: link_data[key]})
-#                             db.commit()
-
-#                     except Exception as e:
-#                         print({key: e})
-
-#         return link_details
+#     return new_bot

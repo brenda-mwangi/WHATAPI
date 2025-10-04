@@ -36,16 +36,6 @@ class UserBase(BaseModel):
     email: EmailStr
     password: str
 
-# class UserBase(BaseModel):
-#     id: int = None
-#     username: constr(min_length=2, max_length=50) = Field(..., example="John")
-#     email: EmailStr = Field(..., example="john@example.com")
-#     password: constr(min_length=8) = Field(..., example="Pass@123*")
-
-#     @validator('password')
-#     def check_password_requirements(cls, v):
-#         PasswordRequirements(password=v)
-#         return v
 
 class UserLogin(BaseModel):
     """Handles user login data"""
@@ -81,22 +71,7 @@ class LinkBase(BaseModel):
         super().__init__(**data)
         self.id = generate_random_link()
 
-    # @validator('our_percentage', always=True)
-    # def set_our_percentage(cls, v, values):
-    #     total_amount_collected = values.get('total_amount_collected')
-    #     if total_amount_collected <= 1000:
-    #         return 5.5
-    #     elif total_amount_collected <= 5000:
-    #         return 5
-    #     elif total_amount_collected <= 20000:
-    #         return 4.75
-    #     else:
-    #         return 4.5
-
-    # total_amount_collected: conint(ge=0)
-    # our_percentage: confloat(ge=0, le=100)
-    # date_started: datetime
-    # date_end: datetime
+ 
 
 class UpdateUser(BaseModel):
     firstname: Optional[constr(min_length=2, max_length=50)]
@@ -163,18 +138,3 @@ class TokenData:
         self.username = username
         self.role = role
 
-
-# class Contribution(BaseModel):
-#     full_name: str
-#     hide_name: bool
-#     phone: constr(regex=r'^(\+254\s?[17])\d{8}$')
-#     contribution_amount: float
-#     mode_of_payment: ModeOfPayment
-
-#     @validator('contribution_amount')
-#     def validate_min_amount(cls, v):
-#         if v < 50:
-#             raise ValueError('Contribution amount must be at least 50')
-#         else:
-#             v = ceil(v)
-#         return v

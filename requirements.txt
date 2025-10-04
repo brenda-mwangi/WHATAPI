@@ -1,5 +1,0 @@
-fastapi
-sqlalchemy
-twilio
-python-jose
-passlib

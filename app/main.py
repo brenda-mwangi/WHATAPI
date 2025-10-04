@@ -1,69 +1,71 @@
-# changabox,changalink
-#docker run -v /home/d43m0n4/Desktop/code/openwa-experiment/sessions:/sessions -e PORT=8085 -p 8085:8085 --init openwa/wa-automate -w http://172.17.0.1:8089/items/ --socket
-
 import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.staticfiles import StaticFiles
-import uvicorn
-from models import Base
-from database import engine
-from oath2 import SECRET_KEY
-from sys import path
-# path.append("/home/d43m0n4/Desktop/code/WhatAPI")
-# path.append("/opt/render/project/src/")
-# path.append("/Users/charles/Desktop/code/WhatAPI") #macos
-from routers import users, links, auth, bot_config
+
+from app.models import Base
+from app.database import engine
+from app.oath2 import SECRET_KEY
+from app.routers import users, links, auth, bot_config
 
 Base.metadata.create_all(bind=engine)
 
 tags_metadata = [
     {
         "name": "Authentication",
-        "description": "Manage authentication",
+        "description": "User login, signup, and account management",
     },
     {
-        "name": "User",
-        "description": "Operations for **users only**",
+        "name": "Bots",
+        "description": "Create, update, and manage WhatsApp bots for your business",
     },
     {
-        "name": "Link",
-        "description": "Manage Links only.",
-        "externalDocs": {
-            "description": "Items external docs",
-            "url": "https://fastapi.tiangolo.com/",
-        },
+        "name": "WhatsApp Integration",
+        "description": "Connect and verify WhatsApp numbers, link bots to phone numbers",
     },
     {
-        "name": "Bot Operations",
-        "description": "Bot Operations Available",
-    }
+        "name": "Chat Simulation",
+        "description": "Test and debug your bot conversations before going live",
+    },
+    {
+        "name": "Billing",
+        "description": "Manage subscriptions, plans, and quotas",
+    },
 ]
-description = "The FundraiserBot is an innovative automated system meticulously crafted to revolutionize fundraising endeavors through the ubiquitous WhatsApp platform. It streamlines and simplifies the fundraising process by seamlessly integrating with WhatsApp, enabling effortless donation collection, transparent tracking of funds, and efficient communication with donors and beneficiaries. Its robust functionalities encompass personalized donation campaigns, real-time progress updates, and secure handling of contributions, empowering organizations and individuals to initiate and manage successful fundraising initiatives effortlessly."
+description = """
+**WhatsApp Bot SaaS Platform** 🚀
+
+This API powers a multi-tenant SaaS platform for businesses to build, test, and deploy WhatsApp bots.  
+Features include:
+- Secure user accounts and multi-tenant support  
+- Easy bot creation and stateful chatbot flows  
+- Sandbox for testing messages  
+- Direct integration with WhatsApp numbers  
+- Subscription & billing management  
+"""
 app = FastAPI(
-    title="WhatAPI API Documentation",
+    title="WhatsApp Bot SaaS API",
     description=description,
-    summary='"Empowering Causes, One Message at a Time."',
-    version="1.0.",
-    terms_of_service="http://changalink.bdigismat.com/terms/",
+    summary="All-in-one WhatsApp chatbot SaaS backend",
+    version="1.0.0",
+    terms_of_service="https://whatsapp.kriftx.app/terms/",
     contact={
-        "name": "Brenda Mwangi",
-        "url": "http://changalink.bdigismat.com/contact/",
-        "email": "brenda@changalink.bdigismat.com",
+        "name": "Your Company",
+        "url": "https://whatsapp.kriftx.app",
+        "email": "support@whatsapp.kriftx.app",
     },
     license_info={
-        "name": "Apache 2.0",
-        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+        "name": "Commercial License",
+        "url": "https://whatsapp.kriftx.app/license",
     },
     docs_url=None,
-    redoc_url="/v2/popnplay",
+    redoc_url="/v1/docs",
     openapi_tags=tags_metadata,
-              )
+)
 
-app = FastAPI()
-
+# Serve static files
 static_path = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -81,5 +83,13 @@ app.include_router(users.router)
 app.include_router(bot_config.router)
 app.include_router(auth.router)
 
-if __name__ == "__main__":
-    uvicorn.run(host="localhost", reload=True, app="main:app")
+# # 🔥 Add a route lister
+# @app.get("/routes", tags=["Debug"])
+# async def list_routes():
+#     return [
+#         {
+#             "path": route.path,
+#             "name": route.name,
+#         }
+#         for route in app.router.routes
+#     ]

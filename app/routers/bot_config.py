@@ -21,7 +21,7 @@ def create_bot_page(request: Request, db: Session = Depends(get_db), logged_in_u
     """
     Endpoint to serve create a new bot account.
     """
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("working.html", {"request": request})
 
 # @router.get("/create-bot/{user_id}")
 # def create_bot(user_id: int):

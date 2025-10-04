@@ -2,11 +2,9 @@ import random
 import time
 from passlib.context import CryptContext
 import uuid
-import requests
-import json
 from starlette.templating import Jinja2Templates
 
-pwd_ctxt = CryptContext(schemes=["bcrypt"], deprecated= "auto")
+pwd_ctxt = CryptContext(schemes=["argon2"], deprecated= "auto")
 base_url = "http://localhost:8000"
 
 # Template configuration

@@ -2,7 +2,7 @@ import re
 from typing import Optional
 from pydantic import BaseModel, constr, validator,EmailStr, Field
 from enum import Enum
-import utils
+from app.utils import generate_random_link
 
 
 class PasswordRequirements(BaseModel):
@@ -65,7 +65,7 @@ class UserLogin(BaseModel):
         return v
 
 class LinkBase(BaseModel):
-    id: str = utils.generate_random_link()
+    id: str = generate_random_link()
     title: constr(max_length=70, min_length=1)
     description: constr(min_length=1)
     mode_of_beneficiary_payment: ModeOfPayment
@@ -79,7 +79,7 @@ class LinkBase(BaseModel):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self.id = utils.generate_random_link()
+        self.id = generate_random_link()
 
     # @validator('our_percentage', always=True)
     # def set_our_percentage(cls, v, values):
@@ -112,7 +112,7 @@ class UpdateUser(BaseModel):
             return v
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UpdateLink(BaseModel):
     title: Optional[constr(max_length=70, min_length=1)]
@@ -132,14 +132,14 @@ class UpdateLink(BaseModel):
             return v
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserResponse(BaseModel):
     username: str
     email: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class LinkResponse(BaseModel):
     owner_id: int
@@ -150,7 +150,7 @@ class LinkResponse(BaseModel):
     target_amount: int = Field(default=None, title="The desired amount to be collected")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str

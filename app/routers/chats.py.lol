@@ -262,8 +262,8 @@ async def bot(request: Request):
 
 #     session_txt = session_txt +"*"+message 
 
-#     account_sid = 'AC6aa0e0c7c5d2d91d4cdf2f6af20428e7'
-#     auth_token = 'a0459be0cb77b36edecb305881510d1f'
+#     account_sid = ''
+#     auth_token = ''
 #     client = Client(account_sid, auth_token)
 
 #     resp = f'''<?xml version="1.0" encoding="UTF-8"?>

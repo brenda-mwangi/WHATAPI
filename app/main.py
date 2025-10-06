@@ -8,7 +8,12 @@ from fastapi.staticfiles import StaticFiles
 from app.models import Base
 from app.database import engine
 from app.oath2 import SECRET_KEY
-from app.routers import users, links, auth, bot_config
+from app.routers import services, users, auth, bot_config
+
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
@@ -26,13 +31,17 @@ tags_metadata = [
         "description": "Connect and verify WhatsApp numbers, link bots to phone numbers",
     },
     {
-        "name": "Chat Simulation",
-        "description": "Test and debug your bot conversations before going live",
+        "name": "AI Integration",
+        "description": "Integrate AI capabilities into your WhatsApp bots for enhanced interactions",
     },
-    {
-        "name": "Billing",
-        "description": "Manage subscriptions, plans, and quotas",
-    },
+#     {
+#         "name": "Chat Simulation",
+#         "description": "Test and debug your bot conversations before going live",
+#     },
+#     {
+#         "name": "Billing",
+#         "description": "Manage subscriptions, plans, and quotas",
+#     },
 ]
 description = """
 **WhatsApp Bot SaaS Platform** 🚀
@@ -69,16 +78,17 @@ app = FastAPI(
 static_path = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Specify the correct origins in production
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
-app.include_router(links.router)
+app.include_router(services.router)
 app.include_router(users.router)
 app.include_router(bot_config.router)
 app.include_router(auth.router)

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WhatsApp Bot Builder</title>
+<title>WhatsApp Bot Creator with AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * {
@@ -20,7 +20,7 @@ body {
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
 }
 
@@ -28,11 +28,11 @@ header {
     background: white;
     padding: 20px 30px;
     border-radius: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 header h1 {
@@ -42,42 +42,127 @@ header h1 {
 }
 
 .logout-btn {
-    background: #667eea;
+    background: #ff4757;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s;
-}
-
-.logout-btn:hover {
-    background: #5568d3;
-    transform: translateY(-2px);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .main-content {
     display: grid;
-    grid-template-columns: 300px 1fr 350px;
+    grid-template-columns: 400px 1fr 400px;
     gap: 20px;
-    align-items: start;
 }
 
-/* Setup Panel */
-.setup-panel {
+.ai-section, .builder-section, .preview-section {
     background: white;
-    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.setup-panel h2 {
-    font-size: 18px;
+.ai-section {
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.preview-section {
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.section-title {
     color: #333;
+    font-size: 18px;
     margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #667eea;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.ai-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.ai-card:hover {
+    transform: translateY(-2px);
+}
+
+.ai-card h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.ai-card p {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.ai-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    color: #333;
+    font-size: 20px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
 }
 
 .form-group {
@@ -86,291 +171,185 @@ header h1 {
 
 .form-group label {
     display: block;
-    font-size: 14px;
-    font-weight: 500;
     color: #555;
+    font-weight: 600;
     margin-bottom: 8px;
+    font-size: 14px;
 }
 
-.form-group input,
-.form-group select {
+.form-group input[type="number"],
+.form-group select,
+.form-group input[type="text"],
+.form-group textarea {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
     font-size: 14px;
-    transition: border 0.3s;
+    transition: border-color 0.3s;
+    font-family: 'Inter', sans-serif;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: #667eea;
 }
 
-.language-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
+.setup-panel {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
 }
 
-.language-chip {
+.menu-item {
+    background: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.menu-item.level-0 {
+    border-left: 4px solid #667eea;
+}
+
+.menu-item.level-1 {
+    margin-left: 30px;
+    border-left: 4px solid #48dbfb;
+}
+
+.menu-item.level-2 {
+    margin-left: 60px;
+    border-left: 4px solid #feca57;
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.menu-header h3 {
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.menu-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-primary {
     background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+}
+
+.btn-secondary {
+    background: #48dbfb;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #17c0eb;
+}
+
+.btn-danger {
+    background: #ff4757;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #ee5a6f;
+}
+
+.btn-success {
+    background: #1dd1a1;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #10ac84;
+}
+
+.btn-ai {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 6px 12px;
-    border-radius: 20px;
     font-size: 12px;
-    font-weight: 500;
 }
 
-.add-menu-btn {
-    width: 100%;
-    background: #25D366;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.3s;
-    margin-top: 10px;
-}
-
-.add-menu-btn:hover {
-    background: #20bd5a;
-    transform: translateY(-2px);
-}
-
-/* Builder Area */
-.builder-area {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    min-height: 600px;
-}
-
-.builder-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.builder-header h2 {
-    font-size: 20px;
-    color: #333;
-}
-
-.view-toggle {
+.lang-tabs {
     display: flex;
     gap: 10px;
-}
-
-.toggle-btn {
-    padding: 8px 16px;
-    border: 2px solid #e0e0e0;
-    background: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.3s;
-}
-
-.toggle-btn.active {
-    background: #667eea;
-    color: white;
-    border-color: #667eea;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 80px 20px;
-    color: #999;
-}
-
-.empty-state-icon {
-    font-size: 64px;
-    margin-bottom: 20px;
-}
-
-.empty-state h3 {
-    font-size: 20px;
-    color: #666;
-    margin-bottom: 10px;
-}
-
-.empty-state p {
-    font-size: 14px;
-    color: #999;
-}
-
-/* Menu Card */
-.menu-card {
-    background: #f8f9fa;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative;
-    transition: all 0.3s;
-}
-
-.menu-card:hover {
-    border-color: #667eea;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-}
-
-.menu-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 15px;
     border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    flex-wrap: wrap;
 }
 
-.menu-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.menu-icon {
-    background: #667eea;
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-}
-
-.menu-title h3 {
-    font-size: 16px;
-    color: #333;
-}
-
-.menu-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.icon-btn {
-    width: 32px;
-    height: 32px;
+.lang-tab {
+    padding: 8px 16px;
     border: none;
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
-    font-size: 16px;
-}
-
-.icon-btn:hover {
-    background: #f0f0f0;
-    transform: scale(1.1);
-}
-
-.icon-btn.delete:hover {
-    background: #fee;
-    color: #e53e3e;
-}
-
-.menu-content {
-    display: grid;
-    gap: 15px;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.input-group label {
-    font-size: 12px;
-    font-weight: 600;
+    background: transparent;
     color: #666;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 6px 6px 0 0;
+    transition: all 0.3s;
+    font-size: 13px;
 }
 
-.input-group input,
-.input-group textarea {
-    padding: 10px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: inherit;
-    transition: border 0.3s;
-}
-
-.input-group input:focus,
-.input-group textarea:focus {
-    outline: none;
-    border-color: #667eea;
-}
-
-.input-group textarea {
-    resize: vertical;
-    min-height: 60px;
-}
-
-.multilang-inputs {
-    display: grid;
-    gap: 10px;
-}
-
-.lang-input {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.lang-label {
+.lang-tab.active {
     background: #667eea;
     color: white;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    min-width: 50px;
-    text-align: center;
 }
 
-.lang-input input {
-    flex: 1;
-    padding: 10px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
+.lang-content {
+    display: none;
+}
+
+.lang-content.active {
+    display: block;
 }
 
 .toggle-switch {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.switch {
     position: relative;
+    display: inline-block;
     width: 50px;
-    height: 26px;
+    height: 24px;
 }
 
-.switch input {
+.toggle-switch input {
     opacity: 0;
     width: 0;
     height: 0;
@@ -385,7 +364,7 @@ header h1 {
     bottom: 0;
     background-color: #ccc;
     transition: .4s;
-    border-radius: 34px;
+    border-radius: 24px;
 }
 
 .slider:before {
@@ -393,184 +372,181 @@ header h1 {
     content: "";
     height: 18px;
     width: 18px;
-    left: 4px;
-    bottom: 4px;
+    left: 3px;
+    bottom: 3px;
     background-color: white;
     transition: .4s;
     border-radius: 50%;
 }
 
 input:checked + .slider {
-    background-color: #25D366;
+    background-color: #1dd1a1;
 }
 
 input:checked + .slider:before {
-    transform: translateX(24px);
+    transform: translateX(26px);
 }
 
-.submenu-container {
-    margin-left: 30px;
-    margin-top: 15px;
-    padding-left: 15px;
-    border-left: 3px solid #667eea;
+.preview-phone {
+    background: #25D366;
+    border-radius: 20px;
+    padding: 30px 20px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.add-submenu-btn {
-    background: white;
-    color: #667eea;
-    border: 2px dashed #667eea;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 13px;
-    width: 100%;
-    margin-top: 15px;
-    transition: all 0.3s;
+.preview-phone::before {
+    content: 'WhatsApp Bot Preview';
+    display: block;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    margin-bottom: 20px;
+    font-size: 14px;
 }
 
-.add-submenu-btn:hover {
-    background: #f0f4ff;
-}
-
-/* Preview Panel */
-.preview-panel {
-    background: white;
-    padding: 25px;
+.chat-container {
+    background: #ECE5DD;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 20px;
-}
-
-.preview-panel h2 {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #667eea;
-}
-
-.phone-mockup {
-    background: #f0f0f0;
-    border: 3px solid #333;
-    border-radius: 30px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.phone-screen {
-    background: #e5ddd5;
-    border-radius: 15px;
-    padding: 15px;
+    padding: 20px;
     min-height: 400px;
     max-height: 500px;
     overflow-y: auto;
 }
 
-.chat-message {
+.chat-bubble {
     background: white;
+    padding: 12px 16px;
     border-radius: 8px;
-    padding: 12px;
     margin-bottom: 10px;
+    max-width: 80%;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    max-width: 85%;
+    font-size: 13px;
 }
 
-.bot-message {
-    background: #dcf8c6;
+.chat-bubble.bot {
+    background: #DCF8C6;
+    margin-left: auto;
 }
 
-.message-text {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 8px;
+.chat-option {
+    background: #667eea;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 5px 0;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
 }
 
-.message-options {
+.chat-option:hover {
+    background: #5568d3;
+    transform: translateX(5px);
+}
+
+.test-controls {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.test-input {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    gap: 10px;
     margin-top: 10px;
 }
 
-.option-btn {
-    background: white;
-    border: 1px solid #667eea;
-    color: #667eea;
-    padding: 8px 12px;
-    border-radius: 6px;
+.test-input input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
     font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s;
 }
 
-.option-btn:hover {
-    background: #667eea;
-    color: white;
-}
-
-.action-buttons {
+.action-bar {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+    flex-wrap: wrap;
+}
+
+.json-viewer {
     margin-top: 20px;
-}
-
-.action-btn {
-    padding: 12px;
-    border: none;
+    background: #f8f9fa;
     border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.3s;
-}
-
-.action-btn.primary {
-    background: #667eea;
-    color: white;
-}
-
-.action-btn.primary:hover {
-    background: #5568d3;
-}
-
-.action-btn.secondary {
-    background: white;
-    color: #667eea;
-    border: 2px solid #667eea;
-}
-
-.action-btn.secondary:hover {
-    background: #f0f4ff;
-}
-
-.json-preview {
-    background: #1e1e1e;
-    color: #d4d4d4;
     padding: 15px;
-    border-radius: 8px;
+}
+
+.json-viewer textarea {
+    width: 100%;
+    min-height: 200px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 12px;
     font-family: 'Courier New', monospace;
     font-size: 12px;
-    max-height: 300px;
-    overflow-y: auto;
+    resize: vertical;
+}
+
+.collapse-toggle {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.collapse-toggle:hover {
+    background: #e9ecef;
+}
+
+.collapse-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.collapse-content.open {
+    max-height: 2000px;
+}
+
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.advanced-options {
     margin-top: 15px;
-    display: none;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
 }
 
-.json-preview.show {
-    display: block;
-}
-
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
     .main-content {
         grid-template-columns: 1fr;
     }
     
-    .preview-panel {
-        position: static;
+    .ai-section, .preview-section {
+        position: relative;
+        top: 0;
     }
 }
 </style>
@@ -578,313 +554,397 @@ input:checked + .slider:before {
 <body>
 <div class="container">
     <header>
-        <h1>🤖 WhatsApp Bot Builder</h1>
-        <button class="logout-btn" onclick="window.location.href='/user/logout'">Logout</button>
+        <h1>🤖 WhatsApp Bot Creator with AI</h1>
+        <a href="/user/logout" class="logout-btn">Logout</a>
     </header>
 
     <div class="main-content">
-        <!-- Setup Panel -->
-        <div class="setup-panel">
-            <h2>⚙️ Bot Setup</h2>
+        <!-- AI Assistant Section -->
+        <div class="ai-section">
+            <div class="section-title">✨ AI Assistant</div>
             
-            <div class="form-group">
-                <label>Bot Type</label>
-                <select id="botType" onchange="updatePreview()">
-                    <option value="support">Customer Support</option>
-                    <option value="ecommerce">E-commerce</option>
-                    <option value="booking">Booking/Reservation</option>
-                    <option value="game">Game Bot</option>
-                    <option value="custom">Custom</option>
-                </select>
+            <div class="ai-card" onclick="openAIModal('generator')">
+                <h3>🤖 AI Menu Generator</h3>
+                <p>Describe your bot and let AI create the entire structure</p>
             </div>
 
-            <div class="form-group">
-                <label>Number of Languages</label>
-                <input type="number" id="languageCount" value="2" min="1" max="5" onchange="updateLanguages()">
-                <div class="language-chips" id="languageChips">
-                    <span class="language-chip">EN</span>
-                    <span class="language-chip">ES</span>
-                </div>
+            <div class="ai-card" onclick="openAIModal('suggestions')">
+                <h3>🌍 Multi-Language Suggestions</h3>
+                <p>Auto-generate content in multiple languages</p>
             </div>
 
-            <div class="form-group">
-                <label>Preview Language</label>
-                <select id="previewLanguage" onchange="updatePreview()">
-                    <option value="1">Language 1</option>
-                    <option value="2">Language 2</option>
-                </select>
+            <div class="ai-card" onclick="openAIModal('payload')">
+                <h3>⚡ Smart Payload Generator</h3>
+                <p>Get intelligent payload suggestions</p>
             </div>
 
-            <button class="add-menu-btn" onclick="addMainMenu()">
-                ➕ Add Main Menu
-            </button>
-        </div>
-
-        <!-- Builder Area -->
-        <div class="builder-area">
-            <div class="builder-header">
-                <h2>📝 Build Your Bot</h2>
-                <div class="view-toggle">
-                    <button class="toggle-btn active" onclick="switchView('flow')">Flow View</button>
-                    <button class="toggle-btn" onclick="switchView('json')">JSON View</button>
-                </div>
-            </div>
-
-            <div id="flowView">
-                <div id="menusContainer" class="menus-container">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💬</div>
-                        <h3>Start Building Your Bot</h3>
-                        <p>Click "Add Main Menu" to create your first menu option</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="jsonView" style="display: none;">
-                <textarea id="jsonOutput" style="width: 100%; min-height: 500px; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px;"></textarea>
+            <div class="ai-card" onclick="openTestMode()">
+                <h3>🧪 Bot Testing Mode</h3>
+                <p>Simulate conversations before deployment</p>
             </div>
         </div>
 
-        <!-- Preview Panel -->
-        <div class="preview-panel">
-            <h2>📱 WhatsApp Preview</h2>
-            
-            <div class="phone-mockup">
-                <div class="phone-screen" id="phoneScreen">
-                    <div class="chat-message bot-message">
-                        <div class="message-text">Hello! Welcome to our bot. Please select an option:</div>
-                        <div class="message-options" id="previewOptions">
-                            <!-- Options will be populated here -->
-                        </div>
+        <!-- Builder Section -->
+        <div class="builder-section">
+            <div class="setup-panel">
+                <div class="section-title">⚙️ Bot Setup</div>
+                
+                <div class="form-group">
+                    <label>Number of Languages</label>
+                    <input type="number" id="languageCount" value="2" min="1" max="10" onchange="updateLanguages()">
+                </div>
+
+                <div id="languageNames"></div>
+            </div>
+
+            <div class="menu-builder">
+                <div class="section-title">📋 Menu Structure</div>
+                <div id="menusContainer"></div>
+                <button class="btn btn-primary" onclick="addMenu('menusContainer', 0, null)">➕ Add Main Menu Option</button>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn btn-success" onclick="submitConfiguration()">✅ Save & Deploy Bot</button>
+                <button class="btn btn-secondary" onclick="downloadJSON()">⬇️ Download JSON</button>
+            </div>
+
+            <div class="json-viewer">
+                <div class="collapse-toggle" onclick="toggleJSON()">
+                    <span>View JSON Configuration</span>
+                    <span id="jsonToggleIcon">▼</span>
+                </div>
+                <div class="collapse-content" id="jsonCollapse">
+                    <textarea id="jsonOutput" readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <div class="section-title">📱 Live Preview</div>
+            <div class="preview-phone">
+                <div class="chat-container" id="chatPreview">
+                    <div class="chat-bubble">
+                        Welcome! Please select an option:
                     </div>
                 </div>
             </div>
-
-            <div class="action-buttons">
-                <button class="action-btn primary" onclick="submitConfiguration()">
-                    💾 Save Configuration
-                </button>
-                <button class="action-btn secondary" onclick="downloadJSON()">
-                    📥 Download JSON
-                </button>
-                <button class="action-btn secondary" onclick="toggleJSON()">
-                    👁️ Toggle JSON
-                </button>
+            <div class="test-controls">
+                <label style="font-weight: 600; font-size: 14px; color: #555;">Test Mode</label>
+                <div class="test-input">
+                    <input type="text" id="testInput" placeholder="Type option number or text..." disabled>
+                    <button class="btn btn-primary btn-sm" onclick="sendTestMessage()" disabled>Send</button>
+                </div>
             </div>
-
-            <div class="json-preview" id="jsonPreview"></div>
         </div>
     </div>
 </div>
 
+<!-- AI Modals -->
+<div id="aiModal" class="ai-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">AI Assistant</h2>
+            <button class="close-modal" onclick="closeAIModal()">×</button>
+        </div>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
 <script>
-let menuIdCounter = 0;
-let botConfig = [];
+let menuCounter = 0;
+let languages = [];
+let testMode = false;
+let testPath = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateLanguages();
+    updateJSON();
+});
 
 function updateLanguages() {
     const count = parseInt(document.getElementById('languageCount').value) || 1;
-    const chips = document.getElementById('languageChips');
-    const previewSelect = document.getElementById('previewLanguage');
+    const container = document.getElementById('languageNames');
     
-    chips.innerHTML = '';
-    previewSelect.innerHTML = '';
+    let html = '<div class="form-group"><label>Language Names</label>';
+    for (let i = 1; i <= count; i++) {
+        const currentName = languages[i-1] || (i === 1 ? 'English' : i === 2 ? 'Kiswahili' : `Language ${i}`);
+        html += `<input type="text" placeholder="Language ${i} name" 
+                 value="${currentName}" onchange="updateLanguageName(${i-1}, this.value)" 
+                 style="margin-bottom: 8px;">`;
+    }
+    html += '</div>';
+    container.innerHTML = html;
     
-    const langs = ['EN', 'ES', 'FR', 'DE', 'IT', 'PT', 'RU', 'ZH', 'JA', 'KO'];
-    for (let i = 0; i < count; i++) {
-        chips.innerHTML += `<span class="language-chip">${langs[i] || 'L' + (i+1)}</span>`;
-        previewSelect.innerHTML += `<option value="${i+1}">Language ${i+1} (${langs[i] || 'L' + (i+1)})</option>`;
+    languages = languages.slice(0, count);
+    while (languages.length < count) {
+        languages.push(languages.length === 0 ? 'English' : languages.length === 1 ? 'Kiswahili' : `Language ${languages.length + 1}`);
     }
     
+    updateAllMenuLanguages();
+}
+
+function updateLanguageName(index, value) {
+    languages[index] = value || `Language ${index + 1}`;
+    updateAllMenuLanguages();
+}
+
+function updateAllMenuLanguages() {
+    document.querySelectorAll('.menu-item').forEach(menu => {
+        updateMenuLanguageTabs(menu);
+    });
     updateJSON();
 }
 
-function addMainMenu() {
-    const container = document.getElementById('menusContainer');
-    const emptyState = container.querySelector('.empty-state');
-    if (emptyState) emptyState.remove();
+function updateMenuLanguageTabs(menuElement) {
+    const tabsContainer = menuElement.querySelector('.lang-tabs');
+    const contentsContainer = menuElement.querySelector('.lang-contents');
     
-    const menuId = ++menuIdCounter;
-    const languageCount = parseInt(document.getElementById('languageCount').value) || 1;
+    if (!tabsContainer || !contentsContainer) return;
     
-    const menuCard = createMenuCard(menuId, 0, languageCount);
-    container.appendChild(menuCard);
+    const currentTexts = {};
+    const currentDescriptions = {};
     
-    updateJSON();
-    updatePreview();
-}
-
-function createMenuCard(menuId, level, languageCount) {
-    const div = document.createElement('div');
-    div.className = 'menu-card';
-    div.id = `menu-${menuId}`;
-    div.setAttribute('data-value', menuId);
-    div.setAttribute('data-level', level);
+    contentsContainer.querySelectorAll('.lang-content').forEach((content, idx) => {
+        const textInput = content.querySelector('.text-input');
+        const descInput = content.querySelector('.desc-input');
+        if (textInput) currentTexts[idx] = textInput.value;
+        if (descInput) currentDescriptions[idx] = descInput.value;
+    });
     
-    let descriptionInputs = '';
-    let textInputs = '';
+    tabsContainer.innerHTML = '';
+    contentsContainer.innerHTML = '';
     
-    for (let i = 1; i <= languageCount; i++) {
-        descriptionInputs += `
-            <div class="lang-input">
-                <span class="lang-label">L${i}</span>
-                <input type="text" class="description" data-lang="${i}" placeholder="Description for language ${i}" oninput="updateJSON(); updatePreview();">
-            </div>
-        `;
+    languages.forEach((lang, idx) => {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = `lang-tab ${idx === 0 ? 'active' : ''}`;
+        tab.textContent = lang;
+        tab.onclick = () => switchLanguage(menuElement, idx);
+        tabsContainer.appendChild(tab);
         
-        textInputs += `
-            <div class="lang-input">
-                <span class="lang-label">L${i}</span>
-                <input type="text" class="text" data-lang="${i}" placeholder="Button text for language ${i}" oninput="updateJSON(); updatePreview();">
+        const content = document.createElement('div');
+        content.className = `lang-content ${idx === 0 ? 'active' : ''}`;
+        content.innerHTML = `
+            <div class="form-group">
+                <label>Button Text (${lang}) <button type="button" class="btn btn-ai btn-sm" onclick="aiSuggestText(this, '${lang}', 'button')">✨ AI Suggest</button></label>
+                <input type="text" class="text-input" placeholder="E.g., Main Menu" 
+                       value="${currentTexts[idx] || ''}" oninput="updateJSON()">
+            </div>
+            <div class="form-group">
+                <label>Description (${lang}) <button type="button" class="btn btn-ai btn-sm" onclick="aiSuggestDescription(this, '${lang}', 'description')">✨ AI Suggest</button></label>
+                <textarea class="desc-input" placeholder="E.g., Go to main menu" 
+                       oninput="updateJSON()">${currentDescriptions[idx] || ''}</textarea>
             </div>
         `;
-    }
+        contentsContainer.appendChild(content);
+    });
+}
+
+function switchLanguage(menuElement, langIndex) {
+    const tabs = menuElement.querySelectorAll('.lang-tab');
+    const contents = menuElement.querySelectorAll('.lang-content');
     
-    div.innerHTML = `
-        <div class="menu-card-header">
-            <div class="menu-title">
-                <div class="menu-icon">${level === 0 ? '📋' : '↳'}</div>
-                <h3>Menu ${menuId}</h3>
-            </div>
-            <div class="menu-actions">
-                <button class="icon-btn" onclick="duplicateMenu('menu-${menuId}')" title="Duplicate">📋</button>
-                <button class="icon-btn delete" onclick="removeMenu('menu-${menuId}')" title="Delete">🗑️</button>
+    tabs.forEach((tab, idx) => {
+        tab.classList.toggle('active', idx === langIndex);
+    });
+    
+    contents.forEach((content, idx) => {
+        content.classList.toggle('active', idx === langIndex);
+    });
+}
+
+function addMenu(parentId, level, parentElement) {
+    const container = parentId === 'menusContainer' 
+        ? document.getElementById('menusContainer')
+        : parentElement.querySelector('.submenu-container');
+    
+    if (!container) return;
+    
+    const existingMenus = container.querySelectorAll(':scope > .menu-item');
+    const nextValue = existingMenus.length + 1;
+    
+    menuCounter++;
+    const menuId = `menu_${menuCounter}`;
+    
+    const menuDiv = document.createElement('div');
+    menuDiv.className = `menu-item level-${level}`;
+    menuDiv.id = menuId;
+    menuDiv.setAttribute('data-value', nextValue);
+    menuDiv.setAttribute('data-level', level);
+    
+    menuDiv.innerHTML = `
+        <div class="menu-header">
+            <h3>Option ${nextValue} ${level > 0 ? `(Level ${level})` : ''}</h3>
+            <div class="menu-controls">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addSubmenu('${menuId}', ${level})">
+                    ➕ Submenu
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeMenu('${menuId}')">
+                    🗑️
+                </button>
             </div>
         </div>
         
-        <div class="menu-content">
-            <div class="input-group">
-                <label>📝 Description (shown to user)</label>
-                <div class="multilang-inputs">
-                    ${descriptionInputs}
+        <div class="lang-tabs"></div>
+        <div class="lang-contents"></div>
+        
+        <div class="form-group">
+            <label>Action Payload <button type="button" class="btn btn-ai btn-sm" onclick="aiSuggestPayload(this)">✨ AI Suggest</button></label>
+            <input type="text" class="payload-input" placeholder="E.g., SHOW_PRODUCTS" oninput="updateJSON()">
+        </div>
+
+        <div class="form-group">
+            <label>Data Type</label>
+            <select class="datatype-input" onchange="updateJSON()">
+                <option value="">None</option>
+                <option value="string">String</option>
+                <option value="number">Number</option>
+                <option value="date">Date</option>
+                <option value="phone">Phone</option>
+                <option value="email">Email</option>
+            </select>
+        </div>
+
+        <div class="advanced-options">
+            <div class="collapse-toggle" onclick="toggleAdvanced(this)">
+                <span>Advanced Options</span>
+                <span>▼</span>
+            </div>
+            <div class="collapse-content">
+                <div class="form-group">
+                    <label>Options Link (API URL)</label>
+                    <input type="text" class="options-link-input" placeholder="http://api.example.com/options" oninput="updateJSON()">
+                </div>
+
+                <div class="form-group">
+                    <label>Update Link (API URL)</label>
+                    <input type="text" class="update-link-input" placeholder="http://api.example.com/update" oninput="updateJSON()">
+                </div>
+
+                <div class="form-group">
+                    <label>Input Field Name</label>
+                    <input type="text" class="input-field-input" placeholder="E.g., username" oninput="updateJSON()">
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <span>Required Field</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" class="required-input" onchange="updateJSON()">
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>Success Message (Language 1)</label>
+                    <textarea class="success-msg-input" placeholder="Operation completed successfully" oninput="updateJSON()"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Failed Message (Language 1)</label>
+                    <textarea class="failed-msg-input" placeholder="Operation failed" oninput="updateJSON()"></textarea>
                 </div>
             </div>
-            
-            <div class="input-group">
-                <label>🔘 Button Text</label>
-                <div class="multilang-inputs">
-                    ${textInputs}
-                </div>
-            </div>
-            
-            <div class="input-group">
-                <label>⚡ Payload (action identifier)</label>
-                <input type="text" class="payload" placeholder="e.g., MENU_SUPPORT, START_ORDER" oninput="updateJSON()">
-            </div>
-            
-            <div class="toggle-switch">
-                <label style="font-size: 14px; color: #666;">Active</label>
-                <label class="switch">
-                    <input type="checkbox" class="active" checked onchange="updateJSON(); updatePreview();">
+        </div>
+        
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <span>Active</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" class="active-input" checked onchange="updateJSON()">
                     <span class="slider"></span>
                 </label>
-            </div>
+            </label>
         </div>
         
-        <button class="add-submenu-btn" onclick="addSubmenu('menu-${menuId}')">
-            ➕ Add Submenu
-        </button>
-        
-        <div class="submenu-container" id="submenu-${menuId}"></div>
+        <div class="submenu-container"></div>
     `;
     
-    return div;
+    container.appendChild(menuDiv);
+    updateMenuLanguageTabs(menuDiv);
+    reindexMenus(container);
+    updateJSON();
 }
 
-function addSubmenu(parentMenuId) {
-    const parent = document.getElementById(parentMenuId);
-    const submenuContainer = document.getElementById('submenu-' + parentMenuId.replace('menu-', ''));
-    const level = parseInt(parent.getAttribute('data-level')) + 1;
-    const languageCount = parseInt(document.getElementById('languageCount').value) || 1;
+function toggleAdvanced(toggle) {
+    const content = toggle.nextElementSibling;
+    const icon = toggle.querySelector('span:last-child');
     
-    const menuId = ++menuIdCounter;
-    const menuCard = createMenuCard(menuId, level, languageCount);
-    submenuContainer.appendChild(menuCard);
-    
-    updateJSON();
-    updatePreview();
+    if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        icon.textContent = '▼';
+    } else {
+        content.classList.add('open');
+        icon.textContent = '▲';
+    }
+}
+
+function addSubmenu(parentMenuId, currentLevel) {
+    const parentMenu = document.getElementById(parentMenuId);
+    addMenu(parentMenuId, currentLevel + 1, parentMenu);
 }
 
 function removeMenu(menuId) {
     const menu = document.getElementById(menuId);
-    if (menu) {
-        menu.remove();
-        updateJSON();
-        updatePreview();
-        
-        const container = document.getElementById('menusContainer');
-        if (container.children.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">💬</div>
-                    <h3>Start Building Your Bot</h3>
-                    <p>Click "Add Main Menu" to create your first menu option</p>
-                </div>
-            `;
-        }
-    }
-}
-
-function duplicateMenu(menuId) {
-    const menu = document.getElementById(menuId);
-    const parent = menu.parentNode;
-    const level = parseInt(menu.getAttribute('data-level'));
-    const languageCount = parseInt(document.getElementById('languageCount').value) || 1;
+    if (!menu) return;
     
-    const newMenuId = ++menuIdCounter;
-    const newMenu = createMenuCard(newMenuId, level, languageCount);
-    
-    // Copy values
-    const descriptions = menu.querySelectorAll('.description');
-    const texts = menu.querySelectorAll('.text');
-    const payload = menu.querySelector('.payload');
-    const active = menu.querySelector('.active');
-    
-    descriptions.forEach((desc, idx) => {
-        const newDesc = newMenu.querySelectorAll('.description')[idx];
-        if (newDesc) newDesc.value = desc.value;
-    });
-    
-    texts.forEach((text, idx) => {
-        const newText = newMenu.querySelectorAll('.text')[idx];
-        if (newText) newText.value = text.value;
-    });
-    
-    if (payload) {
-        const newPayload = newMenu.querySelector('.payload');
-        if (newPayload) newPayload.value = payload.value + '_COPY';
-    }
-    
-    if (active) {
-        const newActive = newMenu.querySelector('.active');
-        if (newActive) newActive.checked = active.checked;
-    }
-    
-    parent.insertBefore(newMenu, menu.nextSibling);
+    const parent = menu.parentElement;
+    menu.remove();
+    reindexMenus(parent);
     updateJSON();
-    updatePreview();
 }
 
-function constructJSON(element) {
-    if (!element) return [];
+function reindexMenus(container) {
+    const menus = container.querySelectorAll(':scope > .menu-item');
+    menus.forEach((menu, idx) => {
+        const newValue = idx + 1;
+        menu.setAttribute('data-value', newValue);
+        const level = parseInt(menu.getAttribute('data-level'));
+        const header = menu.querySelector('h3');
+        if (header) {
+            header.textContent = `Option ${newValue} ${level > 0 ? `(Level ${level})` : ''}`;
+        }
+    });
+}
+
+function constructJSON(container) {
+    const menus = container.querySelectorAll(':scope > .menu-item');
+    const result = [];
     
-    let result = [];
-    const menus = Array.from(element.children).filter(child => child.classList.contains('menu-card'));
-    
-    for (let menu of menus) {
+    menus.forEach(menu => {
         const descriptions = {};
         const texts = {};
+        const successMessages = {};
+        const failedMessages = {};
         
-        menu.querySelectorAll('.description').forEach(input => {
-            descriptions[input.dataset.lang] = input.value || "";
+        menu.querySelectorAll('.lang-content').forEach((content, idx) => {
+            const langKey = (idx + 1).toString();
+            const textInput = content.querySelector('.text-input');
+            const descInput = content.querySelector('.desc-input');
+            texts[langKey] = textInput ? textInput.value : '';
+            descriptions[langKey] = descInput ? descInput.value : '';
         });
         
-        menu.querySelectorAll('.text').forEach(input => {
-            texts[input.dataset.lang] = input.value || "";
+        // Get success and failed messages for each language
+        languages.forEach((lang, idx) => {
+            successMessages[(idx + 1).toString()] = '';
+            failedMessages[(idx + 1).toString()] = '';
         });
         
-        const payload = menu.querySelector('.payload')?.value || '';
-        const active = menu.querySelector('.active')?.checked || false;
+        const successMsg = menu.querySelector('.success-msg-input')?.value || '';
+        const failedMsg = menu.querySelector('.failed-msg-input')?.value || '';
+        if (successMsg) successMessages['1'] = successMsg;
+        if (failedMsg) failedMessages['1'] = failedMsg;
         
+        const payload = menu.querySelector('.payload-input')?.value || '';
+        const dataType = menu.querySelector('.datatype-input')?.value || '';
+        const optionsLink = menu.querySelector('.options-link-input')?.value || '';
+        const updateLink = menu.querySelector('.update-link-input')?.value || '';
+        const inputField = menu.querySelector('.input-field-input')?.value || '';
+        const required = menu.querySelector('.required-input')?.checked || false;
+        const active = menu.querySelector('.active-input')?.checked || false;
         const submenuContainer = menu.querySelector('.submenu-container');
         const content = submenuContainer ? constructJSON(submenuContainer) : [];
         
@@ -892,125 +952,619 @@ function constructJSON(element) {
             code: menu.getAttribute('data-value'),
             description: descriptions,
             text: texts,
+            dataType: dataType,
+            optionsLink: optionsLink,
             payload: payload,
+            input: inputField,
+            required: required,
+            updateLink: updateLink,
             active: active,
+            finalSuccessMessage: successMessages,
+            finalFailedMessage: failedMessages,
             content: content
         });
-    }
+    });
     
     return result;
 }
 
 function updateJSON() {
     const container = document.getElementById('menusContainer');
-    botConfig = constructJSON(container);
-    
+    const jsonData = constructJSON(container);
     const jsonOutput = document.getElementById('jsonOutput');
-    const jsonPreview = document.getElementById('jsonPreview');
-    
-    const formatted = JSON.stringify(botConfig, null, 2);
-    jsonOutput.value = formatted;
-    jsonPreview.textContent = formatted;
+    jsonOutput.value = JSON.stringify(jsonData, null, 2);
+    updatePreview();
 }
 
 function updatePreview() {
-    const previewLang = document.getElementById('previewLanguage').value;
-    const optionsDiv = document.getElementById('previewOptions');
-    
-    optionsDiv.innerHTML = '';
-    
     const container = document.getElementById('menusContainer');
-    const mainMenus = Array.from(container.children).filter(child => child.classList.contains('menu-card'));
+    const menus = container.querySelectorAll(':scope > .menu-item');
+    const chatPreview = document.getElementById('chatPreview');
     
-    mainMenus.forEach(menu => {
-        const textInput = Array.from(menu.querySelectorAll('.text')).find(input => input.dataset.lang === previewLang);
-        const active = menu.querySelector('.active')?.checked;
+    let html = '<div class="chat-bubble">Welcome! Please select an option:</div>';
+    
+    menus.forEach(menu => {
+        const textInput = menu.querySelector('.lang-content.active .text-input');
+        const text = textInput ? textInput.value : 'Untitled Option';
+        const active = menu.querySelector('.active-input')?.checked;
         
-        if (textInput && textInput.value && active) {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.textContent = textInput.value;
-            optionsDiv.appendChild(btn);
+        if (active) {
+            html += `<div class="chat-option">${text || 'Untitled Option'}</div>`;
         }
     });
     
-    if (optionsDiv.children.length === 0) {
-        optionsDiv.innerHTML = '<div style="color: #999; font-size: 13px; text-align: center; padding: 10px;">No active menu options</div>';
+    if (menus.length === 0) {
+        html += '<div class="chat-bubble" style="opacity: 0.6;">No menu options added yet. Add your first menu option to see it here!</div>';
     }
-}
-
-function switchView(view) {
-    const flowView = document.getElementById('flowView');
-    const jsonView = document.getElementById('jsonView');
-    const buttons = document.querySelectorAll('.toggle-btn');
     
-    buttons.forEach(btn => btn.classList.remove('active'));
-    
-    if (view === 'flow') {
-        flowView.style.display = 'block';
-        jsonView.style.display = 'none';
-        buttons[0].classList.add('active');
-    } else {
-        flowView.style.display = 'none';
-        jsonView.style.display = 'block';
-        buttons[1].classList.add('active');
-        updateJSON();
-    }
+    chatPreview.innerHTML = html;
 }
 
 function toggleJSON() {
-    const jsonPreview = document.getElementById('jsonPreview');
-    jsonPreview.classList.toggle('show');
-    updateJSON();
+    const collapse = document.getElementById('jsonCollapse');
+    const icon = document.getElementById('jsonToggleIcon');
+    
+    if (collapse.classList.contains('open')) {
+        collapse.classList.remove('open');
+        icon.textContent = '▼';
+    } else {
+        collapse.classList.add('open');
+        icon.textContent = '▲';
+    }
 }
 
 function downloadJSON() {
-    updateJSON();
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(botConfig, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "whatsapp_bot_config.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    const jsonData = document.getElementById('jsonOutput').value;
+    const blob = new Blob([jsonData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `whatsapp_bot_config_${new Date().getTime()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 function submitConfiguration() {
-    updateJSON();
+    const jsonData = document.getElementById('jsonOutput').value;
     
-    // Get the access token
-    const token = localStorage.getItem('access_token');
-    
-    // Submit to your FastAPI backend
-    fetch('/api/bot/config', {
+    // Send to FastAPI backend
+    fetch('/api/bot/configure', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': 'Bearer ' + localStorage.getItem('access_token')
         },
-        body: JSON.stringify({
-            bot_type: document.getElementById('botType').value,
-            language_count: parseInt(document.getElementById('languageCount').value),
-            configuration: botConfig
-        })
+        body: jsonData
     })
     .then(response => response.json())
     .then(data => {
-        alert('✅ Bot configuration saved successfully!');
-        console.log('Saved config:', data);
+        alert('Bot configuration saved successfully!');
     })
     .catch(error => {
-        alert('❌ Error saving configuration: ' + error.message);
-        console.error('Error:', error);
+        alert('Error saving configuration. Check console for details.');
+        console.error(error);
     });
 }
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', () => {
-    updateLanguages();
-    updateJSON();
-});
+// AI Features
+function openAIModal(type) {
+    const modal = document.getElementById('aiModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    
+    modal.classList.add('active');
+    
+    switch(type) {
+        case 'generator':
+            modalTitle.textContent = '🤖 AI Menu Generator';
+            modalBody.innerHTML = `
+                <div class="form-group">
+                    <label>Describe your bot in plain English</label>
+                    <textarea id="aiDescription" placeholder="E.g., I want to create a fundraising bot where users can create fundraisers, donate money, make pledges, check fundraiser status, and withdraw funds. It should support English and Swahili."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Bot Type</label>
+                    <select id="aiBotType">
+                        <option value="support">Support Bot</option>
+                        <option value="ecommerce">E-commerce Bot</option>
+                        <option value="fundraising">Fundraising Bot</option>
+                        <option value="booking">Booking Bot</option>
+                        <option value="custom">Custom Bot</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="generateMenuStructure()">Generate Menu Structure</button>
+                <div id="aiResult" style="margin-top: 20px;"></div>
+            `;
+            break;
+            
+        case 'suggestions':
+            modalTitle.textContent = '🌍 Multi-Language Suggestions';
+            modalBody.innerHTML = `
+                <div class="form-group">
+                    <label>Source Language</label>
+                    <select id="sourceLang">
+                        ${languages.map((lang, idx) => `<option value="${idx}">${lang}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Target Languages (will translate to all other languages)</label>
+                    <p style="font-size: 12px; color: #666;">AI will translate all menu items from source language to other configured languages</p>
+                </div>
+                <button class="btn btn-primary" onclick="translateAllMenus()">Translate All Menus</button>
+                <div id="aiResult" style="margin-top: 20px;"></div>
+            `;
+            break;
+            
+        case 'payload':
+            modalTitle.textContent = '⚡ Smart Payload Generator';
+            modalBody.innerHTML = `
+                <div class="form-group">
+                    <label>Menu Context</label>
+                    <textarea id="payloadContext" placeholder="E.g., This menu option allows users to create a new fundraiser with title, description, and target amount"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="generatePayload()">Generate Payload</button>
+                <div id="aiResult" style="margin-top: 20px;"></div>
+            `;
+            break;
+    }
+}
 
+function closeAIModal() {
+    document.getElementById('aiModal').classList.remove('active');
+}
+
+async function generateMenuStructure() {
+    const description = document.getElementById('aiDescription').value;
+    const botType = document.getElementById('aiBotType').value;
+    const resultDiv = document.getElementById('aiResult');
+    
+    if (!description) {
+        alert('Please provide a description of your bot');
+        return;
+    }
+    
+    resultDiv.innerHTML = '<div class="loading"></div> Generating menu structure...';
+    
+    try {
+        const response = await fetch("/api/ai/generate-menu", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('access_token')
+            },
+            body: JSON.stringify({
+                description: description,
+                bot_type: botType,
+                languages: languages
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const menuStructure = data.menu_structure;
+        
+        // Clear existing menus
+        document.getElementById('menusContainer').innerHTML = '';
+        
+        // Add generated menus
+        menuStructure.forEach((menu, idx) => {
+            addGeneratedMenu(menu, 'menusContainer', 0, null);
+        });
+        
+        updateJSON();
+        resultDiv.innerHTML = '<div style="color: green; font-weight: 600;">✅ Menu structure generated successfully! Check the builder section.</div>';
+        
+        setTimeout(() => {
+            closeAIModal();
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        resultDiv.innerHTML = '<div style="color: red;">Error generating menu structure. Please try again.</div>';
+    }
+}
+
+function addGeneratedMenu(menuData, parentId, level, parentElement) {
+    const container = parentId === 'menusContainer' 
+        ? document.getElementById('menusContainer')
+        : parentElement.querySelector('.submenu-container');
+    
+    if (!container) return;
+    
+    menuCounter++;
+    const menuId = `menu_${menuCounter}`;
+    
+    const menuDiv = document.createElement('div');
+    menuDiv.className = `menu-item level-${level}`;
+    menuDiv.id = menuId;
+    menuDiv.setAttribute('data-value', menuData.code);
+    menuDiv.setAttribute('data-level', level);
+    
+    menuDiv.innerHTML = `
+        <div class="menu-header">
+            <h3>Option ${menuData.code} ${level > 0 ? `(Level ${level})` : ''}</h3>
+            <div class="menu-controls">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addSubmenu('${menuId}', ${level})">
+                    ➕ Submenu
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeMenu('${menuId}')">
+                    🗑️
+                </button>
+            </div>
+        </div>
+        
+        <div class="lang-tabs"></div>
+        <div class="lang-contents"></div>
+        
+        <div class="form-group">
+            <label>Action Payload <button type="button" class="btn btn-ai btn-sm" onclick="aiSuggestPayload(this)">✨ AI Suggest</button></label>
+            <input type="text" class="payload-input" value="${menuData.payload || ''}" oninput="updateJSON()">
+        </div>
+
+        <div class="form-group">
+            <label>Data Type</label>
+            <select class="datatype-input" onchange="updateJSON()">
+                <option value="" ${!menuData.dataType ? 'selected' : ''}>None</option>
+                <option value="string" ${menuData.dataType === 'string' ? 'selected' : ''}>String</option>
+                <option value="number" ${menuData.dataType === 'number' ? 'selected' : ''}>Number</option>
+                <option value="date" ${menuData.dataType === 'date' ? 'selected' : ''}>Date</option>
+                <option value="phone" ${menuData.dataType === 'phone' ? 'selected' : ''}>Phone</option>
+                <option value="email" ${menuData.dataType === 'email' ? 'selected' : ''}>Email</option>
+            </select>
+        </div>
+
+        <div class="advanced-options">
+            <div class="collapse-toggle" onclick="toggleAdvanced(this)">
+                <span>Advanced Options</span>
+                <span>▼</span>
+            </div>
+            <div class="collapse-content">
+                <div class="form-group">
+                    <label>Options Link (API URL)</label>
+                    <input type="text" class="options-link-input" value="${menuData.optionsLink || ''}" oninput="updateJSON()">
+                </div>
+
+                <div class="form-group">
+                    <label>Update Link (API URL)</label>
+                    <input type="text" class="update-link-input" value="${menuData.updateLink || ''}" oninput="updateJSON()">
+                </div>
+
+                <div class="form-group">
+                    <label>Input Field Name</label>
+                    <input type="text" class="input-field-input" value="${menuData.input || ''}" oninput="updateJSON()">
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <span>Required Field</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" class="required-input" ${menuData.required ? 'checked' : ''} onchange="updateJSON()">
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>Success Message (Language 1)</label>
+                    <textarea class="success-msg-input" oninput="updateJSON()">${menuData.finalSuccessMessage?.['1'] || ''}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Failed Message (Language 1)</label>
+                    <textarea class="failed-msg-input" oninput="updateJSON()">${menuData.finalFailedMessage?.['1'] || ''}</textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <span>Active</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" class="active-input" ${menuData.active ? 'checked' : ''} onchange="updateJSON()">
+                    <span class="slider"></span>
+                </label>
+            </label>
+        </div>
+        
+        <div class="submenu-container"></div>
+    `;
+    
+    container.appendChild(menuDiv);
+    
+    // Create language tabs with data
+    const tabsContainer = menuDiv.querySelector('.lang-tabs');
+    const contentsContainer = menuDiv.querySelector('.lang-contents');
+    
+    languages.forEach((lang, idx) => {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = `lang-tab ${idx === 0 ? 'active' : ''}`;
+        tab.textContent = lang;
+        tab.onclick = () => switchLanguage(menuDiv, idx);
+        tabsContainer.appendChild(tab);
+        
+        const langKey = (idx + 1).toString();
+        const content = document.createElement('div');
+        content.className = `lang-content ${idx === 0 ? 'active' : ''}`;
+        content.innerHTML = `
+            <div class="form-group">
+                <label>Button Text (${lang}) <button type="button" class="btn btn-ai btn-sm" onclick="aiSuggestText(this, '${lang}')">✨ AI Suggest</button></label>
+                <input type="text" class="text-input" value="${menuData.text?.[langKey] || ''}" oninput="updateJSON()">
+            </div>
+            <div class="form-group">
+                <label>Description (${lang}) <button type="button" class="btn btn-ai btn-sm" onclick="aiSuggestDescription(this, '${lang}')">✨ AI Suggest</button></label>
+                <textarea class="desc-input" oninput="updateJSON()">${menuData.description?.[langKey] || ''}</textarea>
+            </div>
+        `;
+        contentsContainer.appendChild(content);
+    });
+    
+    // Add submenus if they exist
+    if (menuData.content && menuData.content.length > 0) {
+        menuData.content.forEach(submenu => {
+            addGeneratedMenu(submenu, menuId, level + 1, menuDiv);
+        });
+    }
+}
+
+async function aiSuggestText(button, language, buttonORdesc='button') {
+    const menuItem = button.closest('.menu-item');
+    const menuHeader = menuItem.querySelector('h3').textContent;
+    const payload = menuItem.querySelector('.payload-input')?.value || '';
+    const textInput = button.closest('.lang-content').querySelector('.text-input');
+    
+    button.disabled = true;
+    button.innerHTML = '<div class="loading"></div>';
+    
+    try {
+        const response = await fetch("/api/ai/suggest-text", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('access_token')
+            },
+            body: JSON.stringify({
+                menu_header: menuHeader,
+                payload: payload,
+                language: language
+            })
+        });
+        
+        const data = await response.json();
+        textInput.value = data.suggestion;
+        updateJSON();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error generating suggestion');
+    }
+    
+    button.disabled = false;
+    button.innerHTML = '✨ AI Suggest';
+}
+
+async function aiSuggestDescription(button, language) {
+    const menuItem = button.closest('.menu-item');
+    const menuHeader = menuItem.querySelector('h3').textContent;
+    const payload = menuItem.querySelector('.payload-input')?.value || '';
+    const textInput = menuItem.querySelector('.lang-content.active .text-input')?.value || '';
+    const descInput = button.closest('.lang-content').querySelector('.desc-input');
+    
+    button.disabled = true;
+    button.innerHTML = '<div class="loading"></div>';
+    
+    try {
+        const response = await fetch("/api/ai/suggest-description", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('access_token')
+            },
+            body: JSON.stringify({
+                menu_header: menuHeader,
+                button_text: textInput,
+                payload: payload,
+                language: language
+            })
+        });
+        
+        const data = await response.json();
+        descInput.value = data.suggestion;
+        updateJSON();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error generating suggestion');
+    }
+    
+    button.disabled = false;
+    button.innerHTML = '✨ AI Suggest';
+}
+
+async function aiSuggestPayload(button) {
+    const menuItem = button.closest('.menu-item');
+    const textInput = menuItem.querySelector('.lang-content.active .text-input')?.value || '';
+    const descInput = menuItem.querySelector('.lang-content.active .desc-input')?.value || '';
+    const payloadInput = menuItem.querySelector('.payload-input');
+    
+    button.disabled = true;
+    button.innerHTML = '<div class="loading"></div>';
+    
+    try {
+        const response = await fetch("/api/ai/suggest-payload", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('access_token')
+            },
+            body: JSON.stringify({
+                button_text: textInput,
+                description: descInput
+            })
+        });
+        
+        const data = await response.json();
+        payloadInput.value = data.suggestion;
+        updateJSON();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error generating payload');
+    }
+    
+    button.disabled = false;
+    button.innerHTML = '✨ AI Suggest';
+}
+
+async function generatePayload() {
+    const context = document.getElementById('payloadContext').value;
+    const resultDiv = document.getElementById('aiResult');
+    
+    if (!context) {
+        alert('Please provide context for the payload');
+        return;
+    }
+    
+    resultDiv.innerHTML = '<div class="loading"></div> Generating payload...';
+    
+    try {
+        const response = await fetch("/api/ai/suggest-payload", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('access_token')
+            },
+            body: JSON.stringify({
+                button_text: "",
+                description: context
+            })
+        });
+        
+        const data = await response.json();
+        const payload = data.suggestion;
+        
+        resultDiv.innerHTML = `<div style="background: #f0f3ff; padding: 15px; border-radius: 8px;">
+            <strong>Suggested Payload:</strong><br>
+            <code style="background: white; padding: 5px 10px; border-radius: 4px; display: inline-block; margin-top: 10px;">${payload}</code>
+        </div>`;
+        
+    } catch (error) {
+        console.error('Error:', error);
+        resultDiv.innerHTML = '<div style="color: red;">Error generating payload. Please try again.</div>';
+    }
+}
+
+async function translateAllMenus() {
+    const sourceLangIdx = parseInt(document.getElementById('sourceLang').value);
+    const resultDiv = document.getElementById('aiResult');
+    
+    resultDiv.innerHTML = '<div class="loading"></div> Translating all menus...';
+    
+    const menus = document.querySelectorAll('.menu-item');
+    let translatedCount = 0;
+    const translationRequests = [];
+    
+    for (const menu of menus) {
+        const sourceLangContent = menu.querySelectorAll('.lang-content')[sourceLangIdx];
+        const sourceText = sourceLangContent.querySelector('.text-input').value;
+        const sourceDesc = sourceLangContent.querySelector('.desc-input').value;
+        
+        if (!sourceText && !sourceDesc) continue;
+        
+        for (let i = 0; i < languages.length; i++) {
+            if (i === sourceLangIdx) continue;
+            
+            translationRequests.push({
+                menu: menu,
+                targetLangIdx: i,
+                sourceText: sourceText,
+                sourceDesc: sourceDesc,
+                sourceLang: languages[sourceLangIdx],
+                targetLang: languages[i]
+            });
+        }
+    }
+    
+    try {
+        const response = await fetch("/api/ai/translate-batch", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('access_token')
+            },
+            body: JSON.stringify({
+                translations: translationRequests.map(req => ({
+                    text: req.sourceText,
+                    description: req.sourceDesc,
+                    source_language: req.sourceLang,
+                    target_language: req.targetLang
+                }))
+            })
+        });
+        
+        const data = await response.json();
+        
+        translationRequests.forEach((req, idx) => {
+            const translation = data.translations[idx];
+            const targetLangContent = req.menu.querySelectorAll('.lang-content')[req.targetLangIdx];
+            targetLangContent.querySelector('.text-input').value = translation.text;
+            targetLangContent.querySelector('.desc-input').value = translation.description;
+            translatedCount++;
+        });
+        
+        updateJSON();
+        resultDiv.innerHTML = `<div style="color: green; font-weight: 600;">✅ Translated ${translatedCount} menu items successfully!</div>`;
+        
+        setTimeout(() => {
+            closeAIModal();
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        resultDiv.innerHTML = '<div style="color: red;">Error translating menus. Please try again.</div>';
+    }
+}
+
+// Bot Testing Mode
+function openTestMode() {
+    testMode = true;
+    testPath = [];
+    document.getElementById('testInput').disabled = false;
+    document.querySelector('.test-controls button').disabled = false;
+    alert('Test mode activated! You can now simulate conversations in the preview panel.');
+}
+
+function sendTestMessage() {
+    const input = document.getElementById('testInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Simulate bot response based on current menu structure
+    const chatPreview = document.getElementById('chatPreview');
+    chatPreview.innerHTML += `<div class="chat-bubble bot">${message}</div>`;
+    
+    // Simple test logic - you can enhance this
+    const container = document.getElementById('menusContainer');
+    const menus = container.querySelectorAll(':scope > .menu-item');
+    
+    chatPreview.innerHTML += `<div class="chat-bubble">You selected: ${message}</div>`;
+    
+    input.value = '';
+    chatPreview.scrollTop = chatPreview.scrollHeight;
+}
+
+// Close modal when clicking outside
+document.getElementById('aiModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeAIModal();
+    }
+});
 </script>
 </body>
 </html>

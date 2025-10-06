@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status, Cookie, Request
 from fastapi.security import  OAuth2PasswordBearer
-from jose import jwt,JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
@@ -9,6 +9,7 @@ from app.database  import get_db
 from app.models import TokenBlacklist, User
 
 oath2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
 # SECRET KEY
 SECRET_KEY = "0d690e0500ca3761119ad0300a4a964a988078648b13001cdb735387208a0b3a84983847"
 
@@ -31,43 +32,57 @@ def create_access_token(data: dict):
     return encoded_jwt
 
 def verify_access_token(token: str, db: Session = Depends(get_db), credentials_exception: HTTPException = HTTPException(status_code=401, detail="Could not validate credentialsve")):
+    print("Verifying token:", token)
+    
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        print("Decoded payload:", payload)
 
         id: str = payload.get("id")
         username: str = payload.get("username")
         role: str = payload.get("role")
 
+        print("Payload:", payload)
+
         if id is None or username is None or role is None:
             raise credentials_exception
 
         # Check if token is in the blacklist
-        
         is_blacklisted = db.query(TokenBlacklist).filter(TokenBlacklist.token == token).first()
         if is_blacklisted:
             raise credentials_exception
 
         token_data = TokenData(id=id, username=username, role=role)
+    
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired. Please log in again.")
 
     except JWTError:
         raise credentials_exception
 
     return token_data
 
-def get_current_user2(token: str = Depends(oath2_scheme), db: Session = Depends(get_db)):
+def get_current_user(token: str = Depends(oath2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail= "Could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
-    token = verify_access_token(token=token,db=db, credentials_exception=credentials_exception)
+    token = verify_access_token(token=token, db=db, credentials_exception=credentials_exception)
+
+    if not isinstance(token, TokenData):
+        raise credentials_exception
 
     user = db.query(User).filter(User.id == token.id).first()
 
-    return user
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    return "user"
 
 
-def get_current_user(request: Request):
+def get_current_user2(request: Request):
     print(request.session)
+    id = request.session.get("id")
     username = request.session.get("user")
     access_token = request.session.get("access_token")
 
     if not username or not access_token:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    return {"username":username, "access_token":access_token}
+    return {"id": id, "username": username, "access_token": access_token}

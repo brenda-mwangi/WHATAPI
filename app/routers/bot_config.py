@@ -1,3 +1,4 @@
+import json
 from app import models, schema, oath2
 from app.database import get_db
 from app.utils import templates
@@ -17,12 +18,39 @@ def bot_home():
     return {"Hello": "world"}
 
 @router.get("/create-bot", response_class=HTMLResponse, summary="Create Bot page")
-def create_bot_page(request: Request, db: Session = Depends(get_db), logged_in_user: models.User = Depends(oath2.get_current_user)):#,logged_in_user: int = Depends(oath2.get_current_user)):
+def create_bot_page(request: Request, db: Session = Depends(get_db)):#, logged_in_user: models.User = Depends(oath2.get_current_user), token: str = Depends(oath2.oath2_scheme)):
     """
     Endpoint to serve create a new bot account.
     """
-    print("Logged in user:", logged_in_user)
     return templates.TemplateResponse("index.html", {"request": request})
+
+@router.post("/save-configuration")
+async def save_bot_configuration(
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oath2.get_current_user),
+    token: str = Depends(oath2.oath2_scheme)  # Add this line to get the access token
+):
+    """Save bot configuration from the builder"""
+    data = await request.json()
+    print("Logged in user:", current_user)
+    print("Access token:", token)
+    
+    bot = models.Bot(
+        owner_id=current_user.id,  # Change this from ['id'] to .id
+        name=data.get('bot_name', 'My Bot'),
+        phone_number=data.get('phone_number'),
+        configuration=json.dumps(data.get('menu_structure', []))
+    )
+    
+    # db.add(bot)
+    # db.commit()
+    # db.refresh(bot)
+    
+    return {
+        "bot_id": bot.id,
+        "webhook_url": f"/bot-runtime/webhook/{bot.id}"
+    }
 
 # @router.get("/create-bot/{user_id}")
 # def create_bot(user_id: int):

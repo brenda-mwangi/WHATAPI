@@ -1119,7 +1119,7 @@ async function generateMenuStructure() {
     const description = document.getElementById('aiDescription').value;
     const botType = document.getElementById('aiBotType').value;
     const resultDiv = document.getElementById('aiResult');
-    
+    console.log(localStorage.getItem('access_token'));
     if (!description) {
         alert('Please provide a description of your bot');
         return;
@@ -1140,32 +1140,70 @@ async function generateMenuStructure() {
                 languages: languages
             })
         });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+
+        // If token expired or user unauthorized, redirect to login
+        if (response.status === 401 || response.status === 403) {
+            // Clear saved token and inform user
+            localStorage.removeItem('access_token');
+            resultDiv.innerHTML = '<div style="color: red; font-weight: 600;">🔒 Unauthorized. Redirecting to login...</div>';
+            setTimeout(() => {
+                closeAIModal();
+                // Adjust this path if your app uses a different login route
+                window.location.href = '/user/login';
+            }, 1200);
+            return;
         }
-        
+
+        if (!response.ok) {
+            // Try to extract error details from the response body
+            let errDetail = `HTTP error! status: ${response.status}`;
+            try {
+                const errData = await response.json();
+                errDetail = errData.detail || errData.error || JSON.stringify(errData);
+            } catch (parseErr) {
+                try {
+                    const text = await response.text();
+                    if (text) errDetail = text;
+                } catch (_) {}
+            }
+            throw new Error(errDetail);
+        }
+
         const data = await response.json();
         const menuStructure = data.menu_structure;
-        
+        console.log('Generated Menu Structure:', menuStructure);
+
         // Clear existing menus
         document.getElementById('menusContainer').innerHTML = '';
-        
+
         // Add generated menus
         menuStructure.forEach((menu, idx) => {
             addGeneratedMenu(menu, 'menusContainer', 0, null);
         });
-        
+
         updateJSON();
         resultDiv.innerHTML = '<div style="color: green; font-weight: 600;">✅ Menu structure generated successfully! Check the builder section.</div>';
-        
+
         setTimeout(() => {
             closeAIModal();
         }, 2000);
-        
+
     } catch (error) {
         console.error('Error:', error);
-        resultDiv.innerHTML = '<div style="color: red;">Error generating menu structure. Please try again.</div>';
+
+        // If error message indicates unauthorized, ensure token is cleared and redirect
+        const errMsg = (error && error.message) ? error.message : 'Error generating menu structure. Please try again.';
+        if (/unauthor/i.test(errMsg)) {
+            localStorage.removeItem('access_token');
+            resultDiv.innerHTML = `<div style="color: red;">${errMsg}. Redirecting to login...</div>`;
+            setTimeout(() => {
+                closeAIModal();
+                window.location.href = '/user/login';
+            }, 1200);
+            return;
+        }
+
+        resultDiv.innerHTML = `<div style="color: red;">Error generating menu structure. ${errMsg}</div>`;
     }
 }
 
@@ -1557,6 +1595,36 @@ function sendTestMessage() {
     
     input.value = '';
     chatPreview.scrollTop = chatPreview.scrollHeight;
+}
+
+async function submitConfiguration() {
+    const jsonData = JSON.parse(document.getElementById('jsonOutput').value);
+    const botName = prompt("Enter bot name:");
+    const phoneNumber = prompt("Enter WhatsApp number (with country code):");
+    const access_token = localStorage.getItem('access_token');
+    
+    if (!botName || !phoneNumber) return;
+    
+    const payload = {
+        bot_name: botName,
+        phone_number: phoneNumber,
+        menu_structure: jsonData
+    };
+    
+    try {
+        const response = await fetch('/bot/save-configuration', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + access_token },
+            // headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const result = await response.json();
+        alert(`Bot created! Webhook URL: ${result.webhook_url}`);
+    } catch (error) {
+        alert('Error saving bot configuration');
+        console.error(error);
+    }
 }
 
 // Close modal when clicking outside

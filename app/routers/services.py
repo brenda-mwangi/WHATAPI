@@ -114,11 +114,12 @@ def call_openai(prompt: str, max_tokens: int = 1000, temperature: float = 0.7,  
 
 # API Endpoints
 @router.post("/ai/generate-menu")
-async def generate_menu(request: GenerateMenuRequest, token: models.User = Depends(oath2.get_current_user)):
+async def generate_menu(request: GenerateMenuRequest): #, token: models.User = Depends(oath2.get_current_user)):
     """Generate complete menu structure based on description"""
     
     # Create language mapping
-    lang_map = "\n".join([f"Language {idx+1}: {lang}" for idx, lang in enumerate(request.languages)])
+    # lang_map = "\n".join([f"Language {idx+1}: {lang}" for idx, lang in enumerate(request.languages)])
+    # print(f"Token is : {token}")
     
     prompt = f"""You are a WhatsApp bot menu structure designer. Based on the following description, create a comprehensive bot menu structure.
 You are an expert conversational system designer creating JSON-based WhatsApp chatbot menus.
@@ -437,9 +438,10 @@ CRITICAL: Respond ONLY with a valid JSON array. NO markdown, NO code blocks, NO 
         return {"menu_structure": menu_structure}
     except json.JSONDecodeError as e:
         raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {str(e)}")
+        
 
 @router.post("/ai/suggest-text")
-async def suggest_text(request: SuggestTextRequest, token: models.User = Depends(oath2.get_current_user)):
+async def suggest_text(request: SuggestTextRequest): #, token: models.User = Depends(oath2.get_current_user)):
     """Generate button text suggestion"""
     
     prompt = f"""Generate a concise button text in {request.language} for a WhatsApp bot menu option.
@@ -463,7 +465,7 @@ Return ONLY the concise button text, no explanations, no quotes, no markdown, no
     return {"suggestion": suggestion}
 
 @router.post("/ai/suggest-description")
-async def suggest_description(request: SuggestDescriptionRequest, token: models.User = Depends(oath2.get_current_user)):
+async def suggest_description(request: SuggestDescriptionRequest): #, token: models.User = Depends(oath2.get_current_user)):
     """Generate description text suggestion"""
     
     prompt = f"""Generate a clear description in {request.language} for a WhatsApp bot menu option.
@@ -481,7 +483,7 @@ Return ONLY the description text (1-2 sentences), no explanations, no quotes."""
     return {"suggestion": suggestion}
 
 @router.post("/ai/suggest-payload")
-async def suggest_payload(request: SuggestPayloadRequest, token: models.User = Depends(oath2.get_current_user)):
+async def suggest_payload(request: SuggestPayloadRequest): #, token: models.User = Depends(oath2.get_current_user)):
     """Generate payload name suggestion"""
     
     prompt = f"""Generate a technical payload name for a WhatsApp bot menu option.
@@ -500,7 +502,7 @@ No explanations, no examples, just the payload name."""
     return {"suggestion": suggestion}
 
 @router.post("/ai/translate-batch")
-async def translate_batch(request: TranslateBatchRequest, token: models.User = Depends(oath2.get_current_user)):
+async def translate_batch(request: TranslateBatchRequest): #, token: models.User = Depends(oath2.get_current_user)):
     """Translate multiple menu items in batch"""
     
     translations = []

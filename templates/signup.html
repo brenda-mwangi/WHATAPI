@@ -10,6 +10,7 @@
    </head>
 <body>
 
+  <div id="notification" style="display: none; text-align: center; padding: 10px; background-color: #4CAF50; color: white; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; border-radius: 4px;"></div>
   <div class="container">
     <input type="checkbox" id="flip">
     <div class="cover">
@@ -81,7 +82,7 @@
     </div>
   </div>
 
-  <!-- <script>
+  <script>
     let baseUrl = "http://localhost:8000"
     document.getElementById('signupForm').addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent the default form submission
@@ -128,45 +129,37 @@
       });
     });
     
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-      // event.preventDefault();
-      const formData = new FormData(this);
-      fetch(`${baseUrl}/auth/login`, {
-          method: 'POST',
-          body: formData
-      })
-      .then(response => {
-          if (response.ok) {
-              return response.json(); // Proceed to get the response data if status is OK
-          } else {
-              throw new Error('Failed to log in'); // Throw an error if response is not OK
-          }
-      })
-      .then(data => {
-          if (data.access_token && data.user) {
-              localStorage.setItem('access_token', data.access_token)
-              console.log(localStorage.getItem('access_token'))
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
 
-              document.getElementById('notification').innerHTML = 'Login successful!';
-              document.getElementById('notification').style.display = 'block';
-              setTimeout(() => {
+    fetch(`${baseUrl}/auth/login`, {
+        method: 'POST',
+        body: formData,
+        credentials: "include" // Important: ensures cookies are sent and received
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to log in');
+        }
+    })
+    .then(data => {
+        // The cookie is now set automatically by the browser!
+        document.getElementById('notification').innerHTML = 'Login successful! Redirecting...';
+        document.getElementById('notification').style.display = 'block';
 
-                window.location.href="/bot/create-bot";
-
-            }, 3000);
-
-          } else {
-              document.getElementById('notification').innerHTML = 'Login failed: ' + data.detail;
-              document.getElementById('notification').style.display = 'block';
-          }
-      })
-
-      .catch(error => {
-          alert('Error: ' + error.message);
-      });
-  });
-  
-  </script> -->
+        // Simply redirect. The browser will handle sending the auth cookie.
+        setTimeout(() => {
+            window.location.href = `${baseUrl}/bot/create-bot`;
+        }, 1500);
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+    });
+});
+  </script>
   
 </body>
 </html>

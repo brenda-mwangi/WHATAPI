@@ -1,0 +1,241 @@
+  {{
+    "code": "1",
+    "nodeType": "menu",
+    "description": {{
+      "1": "Changalink Main Menu:\n1. Start Fundraiser\n2. Donate to Fundraiser\n\n99: Back",
+      "2": "Menyu Kuu ya Changalink:\n1. Anza Mchango\n2. Changia Mchango\n\n99: Rudi Nyuma"
+    }},
+    "text": {{
+      "1": "Main Menu",
+      "2": "Menyu Kuu"
+    }},
+    "dataType": "",
+    "optionsLink": "",
+    "payload": "",
+    "input": "",
+    "required": false,
+    "updateLink": "",
+    "active": true,
+    "finalSuccessMessage": {{
+      "1": "",
+      "2": ""
+    }},
+    "finalFailedMessage": {{
+      "1": "",
+      "2": "",
+      "3": ""
+    }},
+    "content": [
+      {{
+        "code": "1",
+        "nodeType": "action",
+        "description": {{
+          "1": "Start a new fundraiser.\nPlease provide your fundraiser title.",
+          "2": "Anza mchango mpya.\nTafadhali toa kichwa cha mchango wako."
+        }},
+        "text": {{
+          "1": "Start Fundraiser",
+          "2": "Anza Mchango"
+        }},
+        "payload": "",
+        "dataType": "",
+        "required": true,
+        "updateLink": "http://api.example.com/api/?resource=fundraiser&action=create&title={{title}}&target={{target_amount}}",
+        "active": true,
+        "finalSuccessMessage": {{
+            "1": "Fundraiser creation SUCCESS\n\n99: Back to Main Menu",
+            "2": "Mchango umeundwa kwa mafanikio!\n\n99: Rudi kwenye Menyu Kuu"
+          }},
+        "finalFailedMessage": {{
+            "1": "Fundraiser creation FAILED\n",
+            "2": "Kuunda mchango kumeshindikana.\n"
+        }},
+
+        "content": [
+          {{
+            "code": "1.1",
+            "nodeType": "input",
+            "description": {{
+              "1": "Enter Fundraiser Title.",
+              "2": "Weka jina la mchango."
+            }},
+            "text": {{
+              "1": "Fundraiser Title",
+              "2": "Jina la mchango"
+            }},
+            "payload": "fundraiser_title",
+            "dataType": "string",
+            "required": true,
+            "updateLink": "",
+            "conditions": {{
+              "field": "target_amount",
+              "equals": "<user_input>",
+              "next": "1.2"
+            }},
+            "active": true,
+            "finalSuccessMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "finalFailedMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "content": []
+          }},
+          {{
+            "code": "1.2",
+            "nodeType": "input",
+            "description": {{
+              "1": "Enter target amount (KES).",
+              "2": "Weka kiasi cha lengo (KES)."
+            }},
+            "text": {{
+              "1": "Target Amount",
+              "2": "Kiasi cha Lengo"
+            }},
+            "payload": "target_amount",
+            "dataType": "number",
+            "required": true,
+            "updateLink": "",
+            "conditions": {{
+              "field": "mode_of_disbursement",
+              "equals": "Mpesa",
+              "next": "1.3"
+            }},
+            "active": true,
+            "finalSuccessMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "finalFailedMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "content": []
+          }},
+          {{
+            "code": "1.3",
+            "nodeType": "input",
+            "description": {{
+              "1": "Enter mode of disbursement (e.g., Mpesa, Bank Transfer).",
+              "2": "Weka njia ya utoaji (mfano, Mpesa, Uhamisho wa Benki)."
+            }},
+            "text": {{
+              "1": "Mode of Disbursement",
+              "2": "Njia ya Utoaji"
+            }},
+            "payload": "mode_of_disbursement",
+            "dataType": "choice",
+            "required": true,
+            "updateLink": "",
+            "conditions": {{
+              "field": "",
+              "equals": "",
+              "next": ""
+            }},
+            "active": true,
+            "finalSuccessMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "finalFailedMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "content": []
+          }}
+        ]
+      }},
+      {{
+        "code": "2",
+        "nodeType": "menu",
+        "description": {{
+          "1": "Donate to an existing fundraiser.",
+          "2": "Changia mchango uliopo."
+        }},
+        "text": {{
+          "1": "Donate",
+          "2": "Changia"
+        }},
+        "payload": "fundraiserId",
+        "dataType": "number",
+        "required": true,
+        "updateLink": "http://localhost/api/?resource=payment&action=generate_link&fundraiserId={{fundraiserId}}&amount={{amount}}",
+        "active": true,
+        "finalSuccessMessage": {{
+          "1": "Payment link generated successfully!",
+          "2": "Kiungo cha malipo kimeundwa kwa mafanikio!"
+        }},
+        "finalFailedMessage": {{
+          "1": "An error occurred while generating payment link.",
+          "2": "Hitilafu imetokea wakati wa kuunda kiungo cha malipo."
+        }},
+        "content": [
+          {{
+            "code": "2.1",
+            "nodeType": "input",
+            "description": {{
+              "1": "Enter the fundraiser No. you wish to donate to.",
+              "2": "Weka ID ya mchango unaotaka kuchangia."
+            }},
+            "text": {{
+              "1": "Enter fundraiser No.",
+              "2": "Weka ID ya mchango"
+            }},
+            "payload": "fundraiserId",
+            "dataType": "number",
+            "required": true,
+            "updateLink": "",
+            "conditions": {{
+              "field": "amount",
+              "equals": "",
+              "next": "2.2"
+            }},
+            "active": true,
+            "finalSuccessMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "finalFailedMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "content": []
+          }},
+          {{
+            "code": "2.2",
+            "nodeType": "input",
+            "description": {{
+              "1": "Enter the amount you wish to donate.",
+              "2": "Weka kiasi unachotaka kuchangia."
+            }},
+            "text": {{
+              "1": "Enter Amount",
+              "2": "Weka Kiasi"
+            }},
+            "payload": "amount",
+            "dataType": "number",
+            "required": true,
+            "updateLink": "",
+            "conditions": {{
+              "field": "",
+              "equals": "",
+              "next": ""
+            }},
+            "active": true,
+            "finalSuccessMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "finalFailedMessage": {{
+              "1": "",
+              "2": ""
+            }},
+            "content": []
+          }}
+        ]
+      }}
+    ]
+  }}
+]

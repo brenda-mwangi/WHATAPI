@@ -38,7 +38,6 @@ async def create_user_account(request: Request, username: str = Form(...), email
     Endpoint to create a new user account.
     """
     hashed_password = utils.hash(password)  # Ensure you have a function to hash passwords properly
-    # return {"username": username, "email":email, "password":password}
 
     try:
         # Create a new user instance using the models.User model
@@ -146,8 +145,9 @@ def logout(request: Request):
     Endpoint to logout a user by blacklisting their authentication token.
     """
     try:
-        request.session['user'] = False
-        request.session['access_token'] = False
+        # request.session['user'] = False
+        # request.session['access_token'] = False
+        request.cookies.clear("access_token")
 
         # payload = oath2.jwt.decode(token, oath2.SECRET_KEY, algorithms=[oath2.ALGORITHM])
         # expiration_date = payload.get('exp')

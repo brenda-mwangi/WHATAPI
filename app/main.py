@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app.models import Base
 from app.database import engine
 from app.oath2 import SECRET_KEY
-from app.routers import services, users, auth, bot_config
+from app.routers import services, users, auth, bot_config, bot_runtime
 
 from dotenv import load_dotenv
 
@@ -88,10 +88,12 @@ app.add_middleware(
 )
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
+app.include_router(auth.router)
 app.include_router(services.router)
 app.include_router(users.router)
 app.include_router(bot_config.router)
-app.include_router(auth.router)
+app.include_router(bot_runtime.router)
+
 
 # # 🔥 Add a route lister
 # @app.get("/routes", tags=["Debug"])
